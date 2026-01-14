@@ -1,27 +1,29 @@
 package types
 
 import (
-	"github.com/fogleman/gg"
+	"Game/App/Graphics"
+
+	"github.com/go-gl/gl/v4.6-core/gl"
 )
 
 type Drawable interface {
 	GetDrawInfo() *DrawInfo
 }
-type GraphicalCtx struct {
-	ctx *gg.Context
+type GraphicalHelper struct {
+	ctx *Graphics.GlfwContext
 
 	objects []*DrawInfo
 }
 
-func (ctx *GraphicalCtx) DrawBackground() {
-	ctx.ctx.SetRGB(255, 255, 255)
+func (ctx *GraphicalHelper) DrawBackground() {
+	gl.ClearColor(0.0, 255.0, 0.0, 1.0)
 }
 
-func (ctx *GraphicalCtx) AddObjectRender(object Drawable) {
+func (ctx *GraphicalHelper) AddObjectRender(object Drawable) {
 	ctx.objects = append(ctx.objects, object.GetDrawInfo())
 }
 
-func (ctx *GraphicalCtx) RemoveObjectRender(object Drawable) {
+func (ctx *GraphicalHelper) RemoveObjectRender(object Drawable) {
 	info := object.GetDrawInfo()
 	for i := range ctx.objects {
 		if ctx.objects[i] == info {
@@ -30,16 +32,25 @@ func (ctx *GraphicalCtx) RemoveObjectRender(object Drawable) {
 	}
 }
 
-func (ctx *GraphicalCtx) drawObject(info *DrawInfo) {
+func (ctx *GraphicalHelper) drawObject(info *DrawInfo) {
 	if info.Material().image.image != nil {
-		ctx.ctx.DrawRectangle(float64(info.X()), float64(info.Y()), 1*info.scale, 1*info.scale)
+		//ctx.ctx.DrawRectangle(float64(info.X()), float64(info.Y()), 1*info.scale, 1*info.scale)
 	}
-	ctx.ctx.DrawImage(*info.Material().image.image, info.X(), info.Y())
+	//ctx.ctx.DrawImage(*info.Material().image.image, info.X(), info.Y())
 }
 
-func (ctx *GraphicalCtx) Render() {
-	ctx.ctx.Clear()
+func (ctx *GraphicalHelper) Render() {
+	//ctx.ctx.Clear()
+	gl.ClearColor(0.0, 255.0, 0.0, 1.0)
+	gl.Clear(gl.COLOR_BUFFER_BIT)
+	//vertices := []float64{
+	//	-0.5, -0.5, 0.0,
+	//	0.5, -0.5, 0.0,
+	//	0.0, 0.5, 0.0,
+	//}
+	//gl.UseProgram(ctx.program)
 	ctx.DrawBackground()
+	ctx.ctx.RenderText("Ahoj kamaradi bububu")
 
 	for i := range ctx.objects {
 		ctx.drawObject(ctx.objects[i])
