@@ -43,25 +43,23 @@ func (t *t_ShaderManager) LoadVerticesWithIndices(vertices []float32, indices []
 	return vbo, ebo
 }
 
-func (t *t_ShaderManager) checkCache(shaderSource string) uint32 {
+func (t *t_ShaderManager) checkCache(shaderSource string) (uint32, []byte) {
 	first := sha256.New()
 	first.Write([]byte(shaderSource))
 
-	if v, ok := t.shaders[string(first.Sum(nil))]; ok {
-		return v
+	hash := first.Sum(nil)
+	if v, ok := t.shaders[string(hash)]; ok {
+		return v, hash
 	}
-	return 0
+	return 0, hash
 }
 
-func (t *t_ShaderManager) addToCache(shaderSource string, id uint32) {
-	first := sha256.New()
-	first.Write([]byte(shaderSource))
-
-	t.shaders[string(first.Sum(nil))] = id
+func (t *t_ShaderManager) addToCache(shaderSource []byte, id uint32) {
+	t.shaders[string(shaderSource)] = id
 }
 
 func (t *t_ShaderManager) LoadVertexShader(shaderSource string) uint32 {
-	v := t.checkCache(shaderSource)
+	v, hash := t.checkCache(shaderSource)
 	if v != 0 {
 		return v
 	}
@@ -79,7 +77,7 @@ func (t *t_ShaderManager) LoadVertexShader(shaderSource string) uint32 {
 		gl.GetShaderInfoLog(shader, 512, nil, &infoLog[0])
 		panic(gl.GoStr(&infoLog[0]))
 	}
-	t.addToCache(shaderSource, shader)
+	t.addToCache(hash, shader)
 	return shader
 }
 
@@ -102,10 +100,12 @@ func MakeProgram(shaders ...uint32) uint32 {
 }
 
 func (t *t_ShaderManager) LoadFragmentShader(shaderSource string) uint32 {
-	v := t.checkCache(shaderSource)
+
+	v, hash := t.checkCache(shaderSource)
 	if v != 0 {
 		return v
 	}
+
 	shader := gl.CreateShader(gl.FRAGMENT_SHADER)
 	sources, freeSources := gl.Strs(shaderSource)
 	defer freeSources()
@@ -120,6 +120,8 @@ func (t *t_ShaderManager) LoadFragmentShader(shaderSource string) uint32 {
 		gl.GetShaderInfoLog(shader, 512, nil, &infoLog[0])
 		panic(gl.GoStr(&infoLog[0]))
 	}
-	t.addToCache(shaderSource, shader)
+
+	t.addToCache(hash, shader)
+
 	return shader
 }
