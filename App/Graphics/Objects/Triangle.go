@@ -95,7 +95,7 @@ void main()
 
 	r.vertices = SQUAREVertices
 
-	r.indices = SQUAREIdices
+	r.indices = SQUAREIndices
 
 	r.vbo, r.ebo = ShaderManager.LoadVerticesWithIndices(r.vertices, r.indices)
 
