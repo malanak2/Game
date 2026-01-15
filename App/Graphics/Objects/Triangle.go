@@ -1,6 +1,8 @@
 package Objects
 
-import "github.com/go-gl/gl/v4.6-core/gl"
+import (
+	"github.com/go-gl/gl/v4.6-core/gl"
+)
 
 type Triangle struct {
 	Renderable
@@ -8,14 +10,14 @@ type Triangle struct {
 
 func NewTriangle(c Color) Triangle {
 	r := Renderable{}
-	vertex := LoadVertexShader(`#version 460 core
+	vertex := ShaderManager.LoadVertexShader(`#version 460 core
 	layout (location = 0) in vec3 aPos;
 	void main()
 	{
 	   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
 	}`)
 
-	fragment := LoadFragmentShader(`#version 460 core
+	fragment := ShaderManager.LoadFragmentShader(`#version 460 core
 	out vec4 FragColor;
 
 	void main()
@@ -24,8 +26,6 @@ func NewTriangle(c Color) Triangle {
 	} `)
 
 	r.program = MakeProgram(vertex, fragment)
-
-	gl.UseProgram(r.program)
 
 	gl.GenVertexArrays(1, &r.vao)
 
@@ -36,10 +36,17 @@ func NewTriangle(c Color) Triangle {
 		0.5, -0.5, 0.0,
 		0.0, 0.5, 0.0}
 
-	_ = LoadVertices(r.vertices)
+	r.vbo = ShaderManager.LoadVertices(r.vertices)
 
 	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 3*4, nil)
 	gl.EnableVertexAttribArray(0)
 
-	return Triangle{}
+	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
+
+	gl.BindVertexArray(0)
+
+	// Wireframe
+	//gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
+
+	return Triangle{r}
 }

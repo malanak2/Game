@@ -71,9 +71,3 @@ func (g *GlfwContext) Destroy() {
 	g.Window.Destroy()
 	glfw.Terminate()
 }
-
-func (g *GlfwContext) ProcessInput() {
-	if g.Window.GetKey(glfw.KeyEscape) == glfw.Press {
-		g.Window.SetShouldClose(true)
-	}
-}

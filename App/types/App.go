@@ -38,28 +38,44 @@ func InitApp(path *string) (*App, error) {
 	//}
 
 	//window.MakeContextCurrent()
+
 	gCtx := &Graphics.GlfwContext{}
+	gCtx.Init()
+	// Init shader manager
+	Objects.InitShaderManager()
+
 	tris := []Objects.Triangle{
 		Objects.NewTriangle(Objects.NewColor(1, 0, 0, 1)),
 	}
-	app := App{AppState{GraphicalHelper{gCtx, []*Drawable{}}}, config, time.Now(), 0.0, tris}
-	app.appState.gCtx.ctx.Init()
+	app := App{AppState{GraphicalHelper{gCtx, []*Objects.Renderable{}}}, config, time.Now(), 0.0, tris}
+	//app.appState.gCtx.AddObjectRenderer(&tris[0].Renderable)
 
 	return &app, nil
 }
 
 func (a *App) Run() {
-	defer a.appState.gCtx.ctx.Destroy()
-	for !a.appState.gCtx.ctx.Window.ShouldClose() {
+	defer a.appState.gCtx.Destroy()
+	for !a.appState.gCtx.Window.ShouldClose() {
 		glfw.PollEvents()
+
 		// Do Logic
-		a.appState.gCtx.ctx.ProcessInput()
+		a.ProcessInput(a.appState.gCtx.Window)
+
 		oldTime := a.lastFrameTime
 		a.lastFrameTime = time.Now()
 		a.fps = 1 / a.lastFrameTime.Sub(oldTime).Seconds()
+
 		// graphics
 		a.appState.gCtx.Render()
-
-		a.appState.gCtx.ctx.Window.SwapBuffers()
+	}
+}
+func (a *App) ProcessInput(window *glfw.Window) {
+	if window.GetKey(glfw.KeyEscape) == glfw.Press {
+		window.SetShouldClose(true)
+	}
+	if window.GetKey(glfw.KeySpace) == glfw.Press {
+		ti := Objects.NewTriangle(Objects.NewColor(1, 1, 1, 1))
+		a.tris = append(a.tris, ti)
+		a.appState.gCtx.AddObjectRenderer(&ti.Renderable)
 	}
 }

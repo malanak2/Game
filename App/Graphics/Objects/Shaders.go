@@ -1,8 +1,30 @@
 package Objects
 
-import "github.com/go-gl/gl/v4.6-core/gl"
+import (
+	"crypto/sha256"
 
-func LoadVertices(vertices []float32) uint32 {
+	"github.com/go-gl/gl/v4.6-core/gl"
+)
+
+type t_ShaderManager struct {
+	shaders map[string]uint32
+}
+
+var ShaderManager t_ShaderManager
+
+var (
+	SHADER_VERTEX_BASIC = ""
+)
+
+var (
+	SHADER_FRAGMENT_BASIC = ""
+)
+
+func InitShaderManager() {
+	ShaderManager = t_ShaderManager{make(map[string]uint32)}
+}
+
+func (t *t_ShaderManager) LoadVertices(vertices []float32) uint32 {
 	// Generate buffer
 	var vbo uint32
 	gl.GenBuffers(1, &vbo)
@@ -12,8 +34,8 @@ func LoadVertices(vertices []float32) uint32 {
 	return vbo
 }
 
-func LoadVerticesWithIndices(vertices []float32, indices []int32) (uint32, uint32) {
-	vbo := LoadVertices(vertices)
+func (t *t_ShaderManager) LoadVerticesWithIndices(vertices []float32, indices []int32) (uint32, uint32) {
+	vbo := t.LoadVertices(vertices)
 	var ebo uint32
 	// 3. copy our index array in a element buffer for OpenGL to use
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, ebo)
@@ -21,7 +43,28 @@ func LoadVerticesWithIndices(vertices []float32, indices []int32) (uint32, uint3
 	return vbo, ebo
 }
 
-func LoadVertexShader(shaderSource string) uint32 {
+func (t *t_ShaderManager) checkCache(shaderSource string) uint32 {
+	first := sha256.New()
+	first.Write([]byte(shaderSource))
+
+	if v, ok := t.shaders[string(first.Sum(nil))]; ok {
+		return v
+	}
+	return 0
+}
+
+func (t *t_ShaderManager) addToCache(shaderSource string, id uint32) {
+	first := sha256.New()
+	first.Write([]byte(shaderSource))
+
+	t.shaders[string(first.Sum(nil))] = id
+}
+
+func (t *t_ShaderManager) LoadVertexShader(shaderSource string) uint32 {
+	v := t.checkCache(shaderSource)
+	if v != 0 {
+		return v
+	}
 	shader := gl.CreateShader(gl.VERTEX_SHADER)
 	sources, freeSources := gl.Strs(shaderSource)
 	defer freeSources()
@@ -36,6 +79,7 @@ func LoadVertexShader(shaderSource string) uint32 {
 		gl.GetShaderInfoLog(shader, 512, nil, &infoLog[0])
 		panic(gl.GoStr(&infoLog[0]))
 	}
+	t.addToCache(shaderSource, shader)
 	return shader
 }
 
@@ -43,7 +87,6 @@ func MakeProgram(shaders ...uint32) uint32 {
 	program := gl.CreateProgram()
 	for shader := range shaders {
 		gl.AttachShader(program, shaders[shader])
-		defer gl.DeleteShader(shaders[shader])
 	}
 	gl.LinkProgram(program)
 	var (
@@ -58,7 +101,11 @@ func MakeProgram(shaders ...uint32) uint32 {
 	return program
 }
 
-func LoadFragmentShader(shaderSource string) uint32 {
+func (t *t_ShaderManager) LoadFragmentShader(shaderSource string) uint32 {
+	v := t.checkCache(shaderSource)
+	if v != 0 {
+		return v
+	}
 	shader := gl.CreateShader(gl.FRAGMENT_SHADER)
 	sources, freeSources := gl.Strs(shaderSource)
 	defer freeSources()
@@ -73,5 +120,6 @@ func LoadFragmentShader(shaderSource string) uint32 {
 		gl.GetShaderInfoLog(shader, 512, nil, &infoLog[0])
 		panic(gl.GoStr(&infoLog[0]))
 	}
+	t.addToCache(shaderSource, shader)
 	return shader
 }
