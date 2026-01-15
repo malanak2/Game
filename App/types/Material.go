@@ -1,7 +1,9 @@
 package types
 
+import "Game/App/Graphics/Objects"
+
 type Material struct {
 	image Sprite
 
-	color Color
+	color Objects.Color
 }

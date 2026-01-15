@@ -13,6 +13,10 @@ var RobotoVariable []byte
 
 type GlfwContext struct {
 	Window *glfw.Window
+
+	Programs []uint32
+
+	Vao []uint32
 }
 
 func (g *GlfwContext) Init() {
@@ -50,15 +54,26 @@ func (g *GlfwContext) Init() {
 	//g.window.SetKeyCallback(onKey)
 	//g.window.SetSizeCallback(onResize)
 	g.Window.MakeContextCurrent()
+
 	err = gl.Init()
 	if err != nil {
-		glfw.Terminate()
 		g.Window.Destroy()
+		glfw.Terminate()
 		panic(err)
 	}
+
+	gl.Viewport(0, 0, 300, 300)
+
+	gl.ClearColor(0.0, 0.0, 1.0, 1)
 }
 
 func (g *GlfwContext) Destroy() {
-	glfw.Terminate()
 	g.Window.Destroy()
+	glfw.Terminate()
+}
+
+func (g *GlfwContext) ProcessInput() {
+	if g.Window.GetKey(glfw.KeyEscape) == glfw.Press {
+		g.Window.SetShouldClose(true)
+	}
 }
