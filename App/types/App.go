@@ -25,7 +25,7 @@ func InitApp(path *string) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Init local vars
+	// InitTextureManager local vars
 	keymap = make(map[glfw.Key]glfw.Action)
 
 	//slog.Info("Loading shaders...")
@@ -44,13 +44,14 @@ func InitApp(path *string) (*App, error) {
 
 	gCtx := &Graphics.GlfwContext{}
 	gCtx.Init()
-	// Init shader manager
+	// InitTextureManager shader manager
 	Objects.InitShaderManager()
+	Objects.InitTextureManager()
 
 	tris := []Objects.Triangle{
-		Objects.NewTriangle(Objects.NewColor(1, 0, 0, 1)),
+		//Objects.NewTriangleTextured("asdfTest"),
 	}
-	app := App{AppState{GraphicalHelper{gCtx, []*Objects.Renderable{}}}, config, time.Now(), 0.0, tris}
+	app := App{AppState{GraphicalHelper{gCtx, []*Objects.IRenderable{}}}, config, time.Now(), 0.0, tris}
 	//app.appState.gCtx.AddObjectRenderer(&tris[0].Renderable)
 	// Wireframe
 	if config.Main.wireframe {
@@ -86,7 +87,7 @@ func (a *App) ProcessInput(window *glfw.Window) {
 	if window.GetKey(glfw.KeySpace) == glfw.Press {
 		if keymap[glfw.KeySpace] == glfw.Release {
 			keymap[glfw.KeySpace] = glfw.Press
-			ti := Objects.NewTriangle(Objects.NewColor(0, 1, 0, 1))
+			ti := Objects.NewTriangle(Objects.Color{1, 1, 1, 1})
 			a.tris = append(a.tris, ti)
 			a.appState.gCtx.AddObjectRenderer(&ti.Renderable)
 		}

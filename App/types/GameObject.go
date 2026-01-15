@@ -7,17 +7,11 @@ import (
 type Update func()
 
 type GameObject struct {
-	DrawInfo
-
 	forces Vector
 
 	isActive bool
 
 	update []Update
-}
-
-func (g *GameObject) GetDrawInfo() DrawInfo {
-	return g.DrawInfo
 }
 
 func (g *GameObject) AddUpdateMethod(method Update) {

@@ -37,7 +37,8 @@ func (t *t_ShaderManager) LoadVertices(vertices []float32) uint32 {
 func (t *t_ShaderManager) LoadVerticesWithIndices(vertices []float32, indices []int32) (uint32, uint32) {
 	vbo := t.LoadVertices(vertices)
 	var ebo uint32
-	// 3. copy our index array in a element buffer for OpenGL to use
+	gl.GenBuffers(1, &ebo)
+
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, ebo)
 	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(indices)*4, gl.Ptr(indices), gl.STATIC_DRAW)
 	return vbo, ebo

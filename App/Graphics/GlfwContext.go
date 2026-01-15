@@ -5,7 +5,6 @@ import (
 
 	"github.com/go-gl/gl/v4.6-core/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
-	"github.com/pekim/freetype"
 )
 
 //go:embed Fonts/Roboto-VariableFont_wdth,wght.ttf
@@ -33,21 +32,6 @@ func (g *GlfwContext) Init() {
 	g.Window, err = glfw.CreateWindow(300, 300, "OpenGL Example", nil, nil)
 	if err != nil {
 		glfw.Terminate()
-		panic(err)
-	}
-
-	lib, err := freetype.Init()
-	if err != nil {
-		panic(err)
-	}
-
-	face, err := lib.NewMemoryFace(RobotoVariable, 0)
-	if err != nil {
-		panic(err)
-	}
-
-	err = face.SetPixelSizes(0, 32)
-	if err != nil {
 		panic(err)
 	}
 

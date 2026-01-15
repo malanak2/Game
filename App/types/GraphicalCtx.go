@@ -8,23 +8,20 @@ import (
 	"github.com/go-gl/glfw/v3.3/glfw"
 )
 
-type Drawable interface {
-	Draw()
-}
 type GraphicalHelper struct {
 	*Graphics.GlfwContext
 
-	objects []*Objects.Renderable
+	objects []*Objects.IRenderable
 }
 
 func (ctx *GraphicalHelper) DrawBackground() {
 }
 
-func (ctx *GraphicalHelper) AddObjectRenderer(object *Objects.Renderable) {
-	ctx.objects = append(ctx.objects, object)
+func (ctx *GraphicalHelper) AddObjectRenderer(object Objects.IRenderable) {
+	ctx.objects = append(ctx.objects, &object)
 }
 
-func (ctx *GraphicalHelper) RemoveObjectRenderer(object *Objects.Renderable) {
+func (ctx *GraphicalHelper) RemoveObjectRenderer(object *Objects.IRenderable) {
 	for i := range ctx.objects {
 		if ctx.objects[i] == object {
 			ctx.objects = append(ctx.objects[:i], ctx.objects[i+1:]...)
