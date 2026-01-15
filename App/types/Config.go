@@ -8,10 +8,11 @@ import (
 )
 
 type conf struct {
-	maxFps int
+	maxFps    int
+	wireframe bool
 }
 type Config struct {
-	conf
+	Main conf
 }
 
 func NewConfig(path string) (*Config, error) {
@@ -19,10 +20,10 @@ func NewConfig(path string) (*Config, error) {
 	if err != nil {
 		slog.Info("Generating default config file...")
 		con = ini.Empty()
-		con.NewSection("Main")
-		con.Section("Main").NewKey("shit", "idk mann")
+		_, _ = con.NewSection("Main")
+		_, _ = con.Section("Main").NewKey("wireframe", "true")
 
-		err = con.SaveTo("configMain.ini")
+		err = con.SaveTo(path)
 		if err != nil {
 			return nil, errors.New("Failed to create new config " + err.Error())
 		}

@@ -1,6 +1,8 @@
 package Objects
 
 import (
+	"fmt"
+
 	"github.com/go-gl/gl/v4.6-core/gl"
 )
 
@@ -19,10 +21,11 @@ func NewTriangle(c Color) Triangle {
 
 	fragment := ShaderManager.LoadFragmentShader(`#version 460 core
 	out vec4 FragColor;
+	uniform vec4 inCol;	
 
 	void main()
 	{
-		FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+		FragColor = inCol;
 	} `)
 
 	r.program = MakeProgram(vertex, fragment)
@@ -30,6 +33,12 @@ func NewTriangle(c Color) Triangle {
 	gl.GenVertexArrays(1, &r.vao)
 
 	gl.BindVertexArray(r.vao)
+
+	cStr := gl.Str("inCol\000")
+	r.colorLocation = gl.GetUniformLocation(r.program, cStr)
+	fmt.Println(*cStr)
+
+	r.color = c
 
 	r.vertices = []float32{
 		-0.5, -0.5, 0.0,
@@ -44,9 +53,6 @@ func NewTriangle(c Color) Triangle {
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 
 	gl.BindVertexArray(0)
-
-	// Wireframe
-	//gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
 
 	return Triangle{r}
 }
