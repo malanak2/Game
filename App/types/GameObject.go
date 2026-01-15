@@ -7,8 +7,6 @@ import (
 type Update func()
 
 type GameObject struct {
-	forces Vector
-
 	isActive bool
 
 	update []Update
@@ -33,8 +31,4 @@ func (g *GameObject) Update() {
 			g.update[i]()
 		}
 	}
-}
-
-func (g *GameObject) AddForce(vec Vector) {
-	g.forces.Add(vec)
 }

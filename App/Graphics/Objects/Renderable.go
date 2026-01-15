@@ -46,3 +46,11 @@ func (r *Renderable) Draw() {
 
 	gl.BindVertexArray(0)
 }
+
+func (r *Renderable) Render(shouldRender bool) {
+	if shouldRender {
+		GraphicalManager.AddObjectRenderer(r)
+	} else {
+		GraphicalManager.RemoveObjectRenderer(r)
+	}
+}

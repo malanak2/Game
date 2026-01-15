@@ -1,7 +1,6 @@
 package types
 
 import (
-	"Game/App/Graphics"
 	"Game/App/Graphics/Objects"
 	"time"
 
@@ -10,8 +9,7 @@ import (
 )
 
 type App struct {
-	appState AppState
-	config   *Config
+	config *Config
 
 	lastFrameTime time.Time
 
@@ -42,16 +40,15 @@ func InitApp(path *string) (*App, error) {
 
 	//window.MakeContextCurrent()
 
-	gCtx := &Graphics.GlfwContext{}
-	gCtx.Init()
 	// InitTextureManager shader manager
+	Objects.InitGraphicalManager()
 	Objects.InitShaderManager()
 	Objects.InitTextureManager()
 
 	tris := []Objects.Triangle{
 		//Objects.NewTriangleTextured("asdfTest"),
 	}
-	app := App{AppState{GraphicalHelper{gCtx, []*Objects.IRenderable{}}}, config, time.Now(), 0.0, tris}
+	app := App{config, time.Now(), 0.0, tris}
 	//app.appState.gCtx.AddObjectRenderer(&tris[0].Renderable)
 	// Wireframe
 	if config.Main.wireframe {
@@ -60,19 +57,19 @@ func InitApp(path *string) (*App, error) {
 }
 
 func (a *App) Run() {
-	defer a.appState.gCtx.Destroy()
-	for !a.appState.gCtx.Window.ShouldClose() {
+	defer Objects.GraphicalManager.Destroy()
+	for !Objects.GraphicalManager.Window.ShouldClose() {
 		glfw.PollEvents()
 
 		// Do Logic
-		a.ProcessInput(a.appState.gCtx.Window)
+		a.ProcessInput(Objects.GraphicalManager.Window)
 
 		oldTime := a.lastFrameTime
 		a.lastFrameTime = time.Now()
 		a.fps = 1 / a.lastFrameTime.Sub(oldTime).Seconds()
 
 		// graphics
-		a.appState.gCtx.Render()
+		Objects.GraphicalManager.Render()
 	}
 }
 
@@ -89,7 +86,7 @@ func (a *App) ProcessInput(window *glfw.Window) {
 			keymap[glfw.KeySpace] = glfw.Press
 			ti := Objects.NewTriangle(Objects.Color{1, 1, 1, 1})
 			a.tris = append(a.tris, ti)
-			a.appState.gCtx.AddObjectRenderer(&ti.Renderable)
+			Objects.GraphicalManager.AddObjectRenderer(&ti.Renderable)
 		}
 	} else {
 		keymap[glfw.KeySpace] = glfw.Release
