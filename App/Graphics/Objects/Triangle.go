@@ -12,14 +12,14 @@ type Triangle struct {
 
 func NewTriangle(c Color) Triangle {
 	r := Renderable{}
-	vertex := ShaderManager.LoadVertexShader(`#version 460 core
+	vertex := ShaderManager.LoadVertexShader(`#version 330 core
 	layout (location = 0) in vec3 aPos;
 	void main()
 	{
 	   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
 	}` + "\000")
 
-	fragment := ShaderManager.LoadFragmentShader(`#version 460 core
+	fragment := ShaderManager.LoadFragmentShader(`#version 330 core
 	out vec4 FragColor;
 	uniform vec4 inCol;	
 
