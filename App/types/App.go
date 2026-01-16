@@ -85,7 +85,7 @@ func (a *App) ProcessInput(window *glfw.Window) {
 	if window.GetKey(glfw.KeySpace) == glfw.Press {
 		if keymap[glfw.KeySpace] == glfw.Release {
 			keymap[glfw.KeySpace] = glfw.Press
-			ti := Objects.NewTriangle(Objects.Color{1, 1, 1, 1})
+			ti := Objects.NewTriangleTextured("Surprise.png")
 			a.tris = append(a.tris, ti)
 			Objects.GraphicalManager.AddObjectRenderer(&ti.Renderable)
 		}

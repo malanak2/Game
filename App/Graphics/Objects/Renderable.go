@@ -19,6 +19,10 @@ type Renderable struct {
 
 	ebo uint32
 
+	x, y, z float32
+
+	scale float32
+
 	color Color
 
 	colorLocation int32

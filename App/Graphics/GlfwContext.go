@@ -29,7 +29,7 @@ func (g *GlfwContext) Init() {
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
 
-	g.Window, err = glfw.CreateWindow(300, 300, "OpenGL Example", nil, nil)
+	g.Window, err = glfw.CreateWindow(1920, 1080, "OpenGL Example", nil, nil)
 	if err != nil {
 		glfw.Terminate()
 		panic(err)
@@ -46,7 +46,7 @@ func (g *GlfwContext) Init() {
 		panic(err)
 	}
 
-	gl.Viewport(0, 0, 300, 300)
+	gl.Viewport(0, 0, 1920, 1080)
 
 	gl.ClearColor(0.0, 0.0, 1.0, 1)
 }
