@@ -44,6 +44,7 @@ func InitApp(path *string) (*App, error) {
 	Objects.InitGraphicalManager()
 	Objects.InitShaderManager()
 	Objects.InitTextureManager()
+	InitKeybindManager()
 
 	tris := []Objects.Triangle{
 		//Objects.NewTriangleTextured("asdfTest"),
