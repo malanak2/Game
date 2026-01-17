@@ -46,6 +46,10 @@ func InitApp(path *string) (*App, error) {
 	Objects.InitTextureManager()
 	InitKeybindManager()
 
+	KeybindManager.AddOnPressed(glfw.KeyEscape, func() {
+		Objects.GraphicalManager.Window.SetShouldClose(true)
+	})
+
 	tris := []Objects.Triangle{
 		//Objects.NewTriangleTextured("asdfTest"),
 	}
@@ -63,7 +67,7 @@ func (a *App) Run() {
 		glfw.PollEvents()
 
 		// Do Logic
-		a.ProcessInput(Objects.GraphicalManager.Window)
+		KeybindManager.HandleInput(Objects.GraphicalManager.Window)
 
 		oldTime := a.lastFrameTime
 		a.lastFrameTime = time.Now()
