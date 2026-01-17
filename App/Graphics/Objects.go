@@ -1,4 +1,4 @@
-package Objects
+package Graphics
 
 var (
 	SQUAREVertices = []float32{

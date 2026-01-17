@@ -1,11 +1,11 @@
-package Objects
+package Graphics
 
 import (
 	"github.com/go-gl/gl/v4.6-core/gl"
 )
 
 type IRenderable interface {
-	Draw()
+	Draw() error
 }
 
 type Renderable struct {
@@ -32,7 +32,7 @@ type Renderable struct {
 	texture *LoadedTexture
 }
 
-func (r *Renderable) Draw() {
+func (r *Renderable) Draw() error {
 	gl.UseProgram(r.program)
 	if r.texture != nil {
 		gl.ActiveTexture(gl.TEXTURE0)
@@ -49,6 +49,7 @@ func (r *Renderable) Draw() {
 	}
 
 	gl.BindVertexArray(0)
+	return nil
 }
 
 func (r *Renderable) Render(shouldRender bool) {

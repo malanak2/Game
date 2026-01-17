@@ -19,10 +19,11 @@ type KeybindManagerT struct {
 	binds map[glfw.Key]*KeyBind
 }
 
-func (k *KeybindManagerT) HandleInput(window *glfw.Window) {
+func (k *KeybindManagerT) HandleInput(window *glfw.Window) error {
 	for a, b := range k.binds {
 		b.HandleKeyBind(window.GetKey(a))
 	}
+	return nil
 }
 
 func (k *KeybindManagerT) AddOnPressed(key glfw.Key, pressed Func) int {

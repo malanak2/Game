@@ -1,7 +1,7 @@
 package types
 
 import (
-	"Game/App/Graphics/Objects"
+	"Game/App/Graphics"
 	"time"
 
 	"github.com/go-gl/gl/v4.6-core/gl"
@@ -17,12 +17,12 @@ type App struct {
 }
 
 func closeApp() {
-	Objects.GraphicalManager.Window.SetShouldClose(true)
+	Graphics.GraphicalManager.Window.SetShouldClose(true)
 }
 
 var wfState bool
 
-func toggleWireFrame() {
+func ToggleWireFrame() {
 	if wfState {
 		gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
 	} else {
@@ -32,7 +32,7 @@ func toggleWireFrame() {
 }
 
 func spawnTexturedTriangle() {
-	ti := Objects.NewTriangleTextured("Surprise.png")
+	ti := Graphics.NewTriangleTextured("Surprise.png")
 	ti.Render(true)
 	//a.tris = append(a.tris, ti)
 }
@@ -42,54 +42,48 @@ func InitApp(path *string) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-	// InitTextureManager local vars
 
-	//slog.Info("Loading shaders...")
-	//
-	//prog := loadShaders()
-	//
-	//slog.Info("Shaders loaded")
-
-	// Create a windowed mode window and its OpenGL context
-	//window, err := glfw.CreateWindow(640, 480, "Go Custom Loop", nil, nil)
-	//if err != nil {
-	//	panic(err)
-	//}
-
-	//window.MakeContextCurrent()
-
-	// InitTextureManager shader manager
-	Objects.InitGraphicalManager()
-	Objects.InitShaderManager()
-	Objects.InitTextureManager()
-	Objects.InitObjectManager()
+	// Initialize managers
+	err = Graphics.InitGraphicalManager()
+	if err != nil {
+		return nil, err
+	}
+	Graphics.InitShaderManager()
+	Graphics.InitTextureManager()
+	Graphics.InitObjectManager()
 	InitKeybindManager()
+
 	wfState = false
+
 	KeybindManager.AddOnPressed(glfw.KeyEscape, closeApp)
-	KeybindManager.AddOnPressed(glfw.KeyW, toggleWireFrame)
+	KeybindManager.AddOnPressed(glfw.KeyW, ToggleWireFrame)
 	KeybindManager.AddOnPressed(glfw.KeySpace, spawnTexturedTriangle)
 
 	app := App{config, time.Now(), 0.0}
-	//app.appState.gCtx.AddObjectRenderer(&tris[0].Renderable)
-	// Wireframe
-	if config.Main.wireframe {
-	}
 	return &app, nil
 }
 
-func (a *App) Run() {
-	defer Objects.GraphicalManager.Destroy()
-	for !Objects.GraphicalManager.Window.ShouldClose() {
+func (a *App) Run() error {
+	defer Graphics.GraphicalManager.Destroy()
+	var err error
+	for !Graphics.GraphicalManager.Window.ShouldClose() {
 		glfw.PollEvents()
 
 		// Do Logic
-		KeybindManager.HandleInput(Objects.GraphicalManager.Window)
+		err = KeybindManager.HandleInput(Graphics.GraphicalManager.Window)
+		if err != nil {
+			return err
+		}
 
 		oldTime := a.lastFrameTime
 		a.lastFrameTime = time.Now()
 		a.fps = 1 / a.lastFrameTime.Sub(oldTime).Seconds()
 
-		// graphics
-		Objects.GraphicalManager.Render()
+		// Graphics
+		err = Graphics.GraphicalManager.Render()
+		if err != nil {
+			return err
+		}
 	}
+	return nil
 }
