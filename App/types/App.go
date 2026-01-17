@@ -14,8 +14,27 @@ type App struct {
 	lastFrameTime time.Time
 
 	fps float64
+}
 
-	tris []Objects.Triangle
+func closeApp() {
+	Objects.GraphicalManager.Window.SetShouldClose(true)
+}
+
+var wfState bool
+
+func toggleWireFrame() {
+	if wfState {
+		gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
+	} else {
+		gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
+	}
+	wfState = !wfState
+}
+
+func spawnTexturedTriangle() {
+	ti := Objects.NewTriangleTextured("Surprise.png")
+	ti.Render(true)
+	//a.tris = append(a.tris, ti)
 }
 
 func InitApp(path *string) (*App, error) {
@@ -24,7 +43,6 @@ func InitApp(path *string) (*App, error) {
 		return nil, err
 	}
 	// InitTextureManager local vars
-	keymap = make(map[glfw.Key]glfw.Action)
 
 	//slog.Info("Loading shaders...")
 	//
@@ -44,16 +62,14 @@ func InitApp(path *string) (*App, error) {
 	Objects.InitGraphicalManager()
 	Objects.InitShaderManager()
 	Objects.InitTextureManager()
+	Objects.InitObjectManager()
 	InitKeybindManager()
+	wfState = false
+	KeybindManager.AddOnPressed(glfw.KeyEscape, closeApp)
+	KeybindManager.AddOnPressed(glfw.KeyW, toggleWireFrame)
+	KeybindManager.AddOnPressed(glfw.KeySpace, spawnTexturedTriangle)
 
-	KeybindManager.AddOnPressed(glfw.KeyEscape, func() {
-		Objects.GraphicalManager.Window.SetShouldClose(true)
-	})
-
-	tris := []Objects.Triangle{
-		//Objects.NewTriangleTextured("asdfTest"),
-	}
-	app := App{config, time.Now(), 0.0, tris}
+	app := App{config, time.Now(), 0.0}
 	//app.appState.gCtx.AddObjectRenderer(&tris[0].Renderable)
 	// Wireframe
 	if config.Main.wireframe {
@@ -75,39 +91,5 @@ func (a *App) Run() {
 
 		// graphics
 		Objects.GraphicalManager.Render()
-	}
-}
-
-var wfmode bool
-
-var keymap map[glfw.Key]glfw.Action
-
-func (a *App) ProcessInput(window *glfw.Window) {
-	if window.GetKey(glfw.KeyEscape) == glfw.Press {
-		window.SetShouldClose(true)
-	}
-	if window.GetKey(glfw.KeySpace) == glfw.Press {
-		if keymap[glfw.KeySpace] == glfw.Release {
-			keymap[glfw.KeySpace] = glfw.Press
-			ti := Objects.NewTriangleTextured("Surprise.png")
-			ti.Render(true)
-			a.tris = append(a.tris, ti)
-
-		}
-	} else {
-		keymap[glfw.KeySpace] = glfw.Release
-	}
-	if window.GetKey(glfw.KeyW) == glfw.Press {
-		if keymap[glfw.KeyW] == glfw.Release {
-			keymap[glfw.KeyW] = glfw.Press
-			if wfmode {
-				gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
-			} else {
-				gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
-			}
-			wfmode = !wfmode
-		}
-	} else {
-		keymap[glfw.KeyW] = glfw.Release
 	}
 }

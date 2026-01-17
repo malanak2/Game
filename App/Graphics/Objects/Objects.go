@@ -13,3 +13,13 @@ var (
 		1, 2, 3,
 	}
 )
+
+type ObjectManagerT struct {
+	Objects []*Triangle
+}
+
+var ObjectManager ObjectManagerT
+
+func InitObjectManager() {
+	ObjectManager = ObjectManagerT{make([]*Triangle, 0)}
+}
