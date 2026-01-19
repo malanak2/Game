@@ -1,8 +1,6 @@
 package Graphics
 
 import (
-	"fmt"
-
 	"github.com/go-gl/gl/v4.6-core/gl"
 )
 
@@ -36,7 +34,6 @@ func NewTriangle(c Color) Triangle {
 
 	cStr := gl.Str("inCol\000")
 	r.colorLocation = gl.GetUniformLocation(r.program, cStr)
-	fmt.Println(*cStr)
 
 	r.color = c
 
@@ -86,7 +83,6 @@ void main()
 
 	cStr := gl.Str("inCol\000")
 	r.colorLocation = gl.GetUniformLocation(r.program, cStr)
-	fmt.Println(*cStr)
 	var err error
 	r.texture, err = TextureManager.GetTexture(path)
 	if err != nil {
@@ -107,7 +103,7 @@ void main()
 	// Type
 	// idk
 	// 8 * sizeof(float32)
-	// Gde (sum vsech predeslejch size * sizeof(float32)
+	// Kde (sum vsech predeslejch size * sizeof(float32)
 	gl.EnableVertexAttribArray(1)
 	gl.VertexAttribPointerWithOffset(1, 2, gl.FLOAT, false, 5*4, 3*4)
 
