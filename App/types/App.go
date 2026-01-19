@@ -35,6 +35,11 @@ func spawnTexturedTriangle() error {
 	return nil
 }
 
+func toggleFps() error {
+	AppState.ShowFps = !AppState.ShowFps
+	return nil
+}
+
 func InitApp(path *string) error {
 	err := config2.InitConfig(*path)
 	if err != nil {
@@ -50,6 +55,12 @@ func InitApp(path *string) error {
 	Graphics.InitTextureManager()
 	Graphics.InitObjectManager()
 	Graphics.InitCamera([3]float32{0, 0, 0}, [3]float32{0, 1, 0})
+
+	Graphics.InitFontManager()
+	err = Graphics.InitTextRenderer()
+	if err != nil {
+		return err
+	}
 	InitKeybindManager()
 
 	if config2.Cfg.Dev.Dev {
@@ -80,8 +91,12 @@ func InitApp(path *string) error {
 		KeybindManager.AddOnPressed(glfw.KeyEscape, closeApp)
 		KeybindManager.AddOnPressed(glfw.KeyF1, ToggleWireFrame)
 		KeybindManager.AddOnPressed(glfw.KeyF2, spawnTexturedTriangle)
+		KeybindManager.AddOnPressed(glfw.KeyF3, toggleFps)
 	}
-
+	err = Graphics.LoadFont("Default")
+	if err != nil {
+		return err
+	}
 	wfState = false
 
 	return nil
@@ -105,10 +120,11 @@ func Run() error {
 		Graphics.Camera.Calculate()
 
 		// Graphics
-		err = Graphics.GraphicalManager.Render()
+		err = Graphics.GraphicalManager.Render(AppState.Fps, AppState.ShowFps)
 		if err != nil {
 			return err
 		}
+		Graphics.CheckForGLError()
 	}
 	return nil
 }

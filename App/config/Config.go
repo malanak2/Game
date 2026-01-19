@@ -11,11 +11,13 @@ type confMain struct {
 	MaxFps          int
 	Fov             float32
 	CameraMovespeed float32
+	Vsync           bool
 }
 
 type confDev struct {
 	DebugMode bool
 	Dev       bool
+	WireFrame bool
 }
 type Config struct {
 	Main confMain
@@ -32,7 +34,8 @@ func InitConfig(path string) error {
 		_, _ = con.NewSection("Main")
 		_, _ = con.Section("Main").NewKey("MaxFps", "144")
 		_, _ = con.Section("Main").NewKey("Fov", "45")
-		_, _ = con.Section("Main").NewKey("CameraMovespeed", "50")
+		_, _ = con.Section("Main").NewKey("CameraMovespeed", "500")
+		_, _ = con.Section("Main").NewKey("Vsync", "true")
 		_, _ = con.NewSection("Dev")
 		_, _ = con.Section("Dev").NewKey("Debug", "false")
 		_, _ = con.Section("Dev").NewKey("Dev", "false")

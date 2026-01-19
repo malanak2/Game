@@ -9,9 +9,6 @@ import (
 	"github.com/go-gl/glfw/v3.3/glfw"
 )
 
-//go:embed Fonts/Roboto-VariableFont_wdth,wght.ttf
-var RobotoVariable []byte
-
 type GlfwContext struct {
 	Window *glfw.Window
 
@@ -42,7 +39,6 @@ func (g *GlfwContext) Init() error {
 		glfw.Terminate()
 		return err
 	}
-
 	//g.window.SetKeyCallback(onKey)
 	//g.window.SetSizeCallback(onResize):
 	g.Window.MakeContextCurrent()
@@ -54,13 +50,17 @@ func (g *GlfwContext) Init() error {
 		glfw.Terminate()
 		return err
 	}
+	if !config.Cfg.Main.Vsync {
+		glfw.SwapInterval(0)
+	}
 	version := gl.GoStr(gl.GetString(gl.VERSION))
 	slog.Info("OpenGL version", "v", version)
 
 	gl.Viewport(0, 0, 1920, 1080)
 
-	gl.ClearColor(0.0, 0.0, 0.0, 1)
-
+	gl.ClearColor(0.1, 0.1, 0.1, 1)
+	gl.Enable(gl.BLEND)
+	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 	return nil
 }
 
@@ -73,6 +73,6 @@ func (g *GlfwContext) Destroy() {
 func FramebufferSizeCallback(w *glfw.Window, width int, height int) {
 	gl.Viewport(0, 0, int32(width), int32(height))
 	// Ignore errors, not like we can do much here anyway, better to wait for the proper event loop error bubbling
-	_ = GraphicalManager.Render()
+	_ = GraphicalManager.Render(-1, false)
 	Camera.UpdateScreen(width, height)
 }

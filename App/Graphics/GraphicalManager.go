@@ -1,6 +1,8 @@
 package Graphics
 
 import (
+	"strconv"
+
 	"github.com/go-gl/gl/v4.6-core/gl"
 )
 
@@ -34,7 +36,7 @@ func (ctx *GraphicalmanagerT) RemoveObjectRenderer(object IRenderable) {
 	}
 }
 
-func (ctx *GraphicalmanagerT) Render() error {
+func (ctx *GraphicalmanagerT) Render(fps int, showFps bool) error {
 	// Clear buffer
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 	ctx.DrawBackground()
@@ -43,6 +45,13 @@ func (ctx *GraphicalmanagerT) Render() error {
 	var err error
 	for i := range ctx.objects {
 		err = (*ctx.objects[i]).Draw()
+		if err != nil {
+			return err
+		}
+	}
+	if showFps {
+		// Draw FPS
+		err = TextRenderer.RenderText("FPS: "+strconv.Itoa(fps), 100, 540, 1.0, Color{1, 1, 1, 1}, "Default")
 		if err != nil {
 			return err
 		}

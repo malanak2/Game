@@ -15,14 +15,6 @@ type t_ShaderManager struct {
 
 var ShaderManager t_ShaderManager
 
-var (
-	SHADER_VERTEX_BASIC = ""
-)
-
-var (
-	SHADER_FRAGMENT_BASIC = ""
-)
-
 func InitShaderManager() {
 	ShaderManager = t_ShaderManager{make(map[string]uint32)}
 }
@@ -64,6 +56,14 @@ func (t *t_ShaderManager) addToCache(shaderSource []byte, id uint32) {
 	t.shaders[string(shaderSource)] = id
 }
 
+func (t *t_ShaderManager) RemoveFromCache(shaderId uint32) {
+	for i, shader := range t.shaders {
+		if shader == shaderId {
+			delete(t.shaders, i)
+		}
+	}
+}
+
 func (t *t_ShaderManager) LoadVertexShader(shaderSource string) uint32 {
 	shaderSource = "Resources/Shaders/" + shaderSource + ".vertex"
 	v, hash := t.checkCache(shaderSource)
@@ -99,22 +99,35 @@ func (t *t_ShaderManager) LoadVertexShader(shaderSource string) uint32 {
 	return shader
 }
 
-func MakeProgram(shaders ...uint32) uint32 {
+func MakeProgram(reusableShaders bool, shaders ...uint32) uint32 {
 	program := gl.CreateProgram()
+	CheckForGLError()
 	for _, shader := range shaders {
+		slog.Info("Loading shader", "shader", shader)
 		gl.AttachShader(program, shader)
 	}
-	gl.BindFragDataLocation(program, 0, gl.Str("FragColor\x00"))
+	CheckForGLError()
 	gl.LinkProgram(program)
+	CheckForGLError()
 	var (
 		success int32
 		infoLog [512]uint8
 	)
+	CheckForGLError()
 	gl.GetProgramiv(program, gl.LINK_STATUS, &success)
 	if success != gl.TRUE {
 		gl.GetProgramInfoLog(program, 512, nil, &infoLog[0])
 		panic(gl.GoStr(&infoLog[0]))
 	}
+	CheckForGLError()
+
+	if !reusableShaders {
+		for _, shader := range shaders {
+			gl.DeleteShader(shader)
+			ShaderManager.RemoveFromCache(shader)
+		}
+	}
+	CheckForGLError()
 
 	return program
 }

@@ -17,7 +17,7 @@ func NewTriangle(c Color) Triangle {
 
 	fragment := ShaderManager.LoadFragmentShader(`basicColor`)
 
-	r.program = MakeProgram(vertex, fragment)
+	r.program = MakeProgram(true, vertex, fragment)
 
 	gl.GenVertexArrays(1, &r.vao)
 
@@ -51,7 +51,7 @@ func NewTriangleTextured(path string) Triangle {
 
 	fragment := ShaderManager.LoadFragmentShader(`basicTexture`)
 
-	r.program = MakeProgram(vertex, fragment)
+	r.program = MakeProgram(true, vertex, fragment)
 	gl.UseProgram(r.program)
 
 	r.colorLocation = gl.GetUniformLocation(r.program, gl.Str("inCol\000"))

@@ -7,9 +7,10 @@ type AppStateT struct {
 	lastFrame float64
 	DeltaTime float64
 	Fps       int
+	ShowFps   bool
 }
 
-var AppState = AppStateT{false, 0, 0, 0}
+var AppState = AppStateT{false, 0, 0, 0, false}
 
 func (a *AppStateT) updateDeltaTime() {
 	currentFrame := glfw.GetTime()
@@ -18,7 +19,7 @@ func (a *AppStateT) updateDeltaTime() {
 }
 
 func (a *AppStateT) calculateFps() {
-	a.Fps = int(1.0 / a.DeltaTime * 1000)
+	a.Fps = int(1.0 / (a.DeltaTime * 1000))
 }
 
 func (a *AppStateT) Tick() {
