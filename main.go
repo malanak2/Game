@@ -13,11 +13,11 @@ func init() {
 func main() {
 	pathPtr := flag.String("path", "./config.ini", "The path to program config")
 	// Initialize engine
-	app, err := types.InitApp(pathPtr)
+	err := types.InitApp(pathPtr)
 	if err != nil {
 		panic(err)
 	}
 
 	// Run app
-	app.Run()
+	types.Run()
 }

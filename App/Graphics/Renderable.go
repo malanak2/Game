@@ -1,7 +1,6 @@
 package Graphics
 
 import (
-	"Game/App/config"
 	"log/slog"
 
 	"github.com/go-gl/gl/v4.6-core/gl"
@@ -15,7 +14,7 @@ type IRenderable interface {
 type Renderable struct {
 	vertices []float32
 
-	indices []int32
+	indices []uint32
 
 	vao uint32
 
@@ -44,12 +43,8 @@ type Renderable struct {
 	cameraLocation int32
 }
 
-var (
-	MatPerspective = mgl32.Perspective(mgl32.DegToRad(config.Cfg.Main.Fov), float32(1920)/1080, 0.1, 100)
-	camera         = mgl32.LookAtV(mgl32.Vec3{3, 3, 3}, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{0, 1, 0})
-)
-
 func (r *Renderable) Draw() error {
+
 	gl.UseProgram(r.program)
 	if r.texture != nil {
 		gl.ActiveTexture(gl.TEXTURE0)
@@ -65,15 +60,20 @@ func (r *Renderable) Draw() error {
 
 	// Apply matrix if got
 	if r.matrixLoc != -1 {
-		//r.matrix = r.matrix.Mul4(mgl32.Scale3D(r.scale, r.scale, 1))
-		gl.UniformMatrix4fv(r.matrixLoc, 1, false, &r.matrix[0])
+		matrix := r.matrix.Mul4(mgl32.Scale3D(r.scale, r.scale, 1))
+		//matrix = mgl32.HomogRotate3DY(float32(glfw.GetTime()))
+		gl.UniformMatrix4fv(r.matrixLoc, 1, false, &matrix[0])
+		gl.UniformMatrix4fv(r.perspLocation, 1, false, &Camera.ProjectionMatrix[0])
+		gl.UniformMatrix4fv(r.cameraLocation, 1, false, &Camera.ViewMatrix[0])
 	}
 
 	if r.indices != nil {
-		gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, nil)
+		gl.DrawElements(gl.TRIANGLES, int32(len(r.indices)), gl.UNSIGNED_INT, nil)
 	} else {
 		gl.DrawArrays(gl.TRIANGLES, 0, int32(len(r.vertices)))
 	}
+
+	CheckForGLError()
 
 	gl.BindVertexArray(0)
 	return nil

@@ -3,16 +3,12 @@ package types
 import (
 	"Game/App/Graphics"
 	config2 "Game/App/config"
-	"time"
 
 	"github.com/go-gl/gl/v4.6-core/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
 )
 
 type App struct {
-	lastFrameTime time.Time
-
-	fps float64
 }
 
 func closeApp() error {
@@ -39,47 +35,74 @@ func spawnTexturedTriangle() error {
 	return nil
 }
 
-func InitApp(path *string) (*App, error) {
+func InitApp(path *string) error {
 	err := config2.InitConfig(*path)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// Initialize managers
 	err = Graphics.InitGraphicalManager()
 	if err != nil {
-		return nil, err
+		return err
 	}
 	Graphics.InitShaderManager()
 	Graphics.InitTextureManager()
 	Graphics.InitObjectManager()
+	Graphics.InitCamera([3]float32{0, 0, 0}, [3]float32{0, 1, 0})
 	InitKeybindManager()
+
+	if config2.Cfg.Dev.Dev {
+		KeybindManager.AddOnHeld(glfw.KeyW, func() error {
+			Graphics.Camera.MoveCamera(Graphics.CameraForward, float32(AppState.DeltaTime))
+			return nil
+		})
+		KeybindManager.AddOnHeld(glfw.KeyS, func() error {
+			Graphics.Camera.MoveCamera(Graphics.CameraBackward, float32(AppState.DeltaTime))
+			return nil
+		})
+		KeybindManager.AddOnHeld(glfw.KeyA, func() error {
+			Graphics.Camera.MoveCamera(Graphics.CameraLeft, float32(AppState.DeltaTime))
+			return nil
+		})
+		KeybindManager.AddOnHeld(glfw.KeyD, func() error {
+			Graphics.Camera.MoveCamera(Graphics.CameraRight, float32(AppState.DeltaTime))
+			return nil
+		})
+		KeybindManager.AddOnHeld(glfw.KeySpace, func() error {
+			Graphics.Camera.MoveCamera(Graphics.CameraUp, float32(AppState.DeltaTime))
+			return nil
+		})
+		KeybindManager.AddOnHeld(glfw.KeyLeftShift, func() error {
+			Graphics.Camera.MoveCamera(Graphics.CameraDown, float32(AppState.DeltaTime))
+			return nil
+		})
+		KeybindManager.AddOnPressed(glfw.KeyEscape, closeApp)
+		KeybindManager.AddOnPressed(glfw.KeyF1, ToggleWireFrame)
+		KeybindManager.AddOnPressed(glfw.KeyF2, spawnTexturedTriangle)
+	}
 
 	wfState = false
 
-	KeybindManager.AddOnPressed(glfw.KeyEscape, closeApp)
-	KeybindManager.AddOnPressed(glfw.KeyW, ToggleWireFrame)
-	KeybindManager.AddOnPressed(glfw.KeySpace, spawnTexturedTriangle)
-
-	app := App{time.Now(), 0.0}
-	return &app, nil
+	return nil
 }
 
-func (a *App) Run() error {
+func Run() error {
 	defer Graphics.GraphicalManager.Destroy()
 	var err error
 	for !Graphics.GraphicalManager.Window.ShouldClose() {
 		glfw.PollEvents()
 
-		// Do Logic
+		// Handle Keybinds
 		err = KeybindManager.HandleInput(Graphics.GraphicalManager.Window)
 		if err != nil {
 			return err
 		}
 
-		oldTime := a.lastFrameTime
-		a.lastFrameTime = time.Now()
-		a.fps = 1 / a.lastFrameTime.Sub(oldTime).Seconds()
+		// Calculate Deltatime
+		AppState.Tick()
+		// Update Camera
+		Graphics.Camera.Calculate()
 
 		// Graphics
 		err = Graphics.GraphicalManager.Render()

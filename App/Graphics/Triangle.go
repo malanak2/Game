@@ -1,6 +1,8 @@
 package Graphics
 
 import (
+	"Game/App/config"
+
 	"github.com/go-gl/gl/v4.6-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
 )
@@ -50,17 +52,17 @@ func NewTriangleTextured(path string) Triangle {
 	fragment := ShaderManager.LoadFragmentShader(`basicTexture`)
 
 	r.program = MakeProgram(vertex, fragment)
+	gl.UseProgram(r.program)
+
 	r.colorLocation = gl.GetUniformLocation(r.program, gl.Str("inCol\000"))
 
 	r.matrixLoc = gl.GetUniformLocation(r.program, gl.Str("transform\x00"))
 
-	r.perspLocation = gl.GetUniformLocation(r.program, gl.Str("perspective\000"))
+	r.perspLocation = gl.GetUniformLocation(r.program, gl.Str("projection\000"))
 
 	r.cameraLocation = gl.GetUniformLocation(r.program, gl.Str("camera\x00"))
-
+	MatPerspective := mgl32.Perspective(mgl32.DegToRad(config.Cfg.Main.Fov), float32(1920)/1080, 0.1, 100)
 	gl.UniformMatrix4fv(r.perspLocation, 1, false, &MatPerspective[0])
-	gl.UniformMatrix4fv(r.cameraLocation, 1, false, &camera[0])
-
 	gl.GenVertexArrays(1, &r.vao)
 
 	gl.BindVertexArray(r.vao)
@@ -79,6 +81,7 @@ func NewTriangleTextured(path string) Triangle {
 
 	r.indices = SQUAREIndices
 
+	// Binds vbo, ebo
 	r.vbo, r.ebo = ShaderManager.LoadVerticesWithIndices(r.vertices, r.indices)
 
 	gl.EnableVertexAttribArray(0)
@@ -97,5 +100,6 @@ func NewTriangleTextured(path string) Triangle {
 
 	gl.BindVertexArray(0)
 
+	CheckForGLError()
 	return Triangle{r}
 }

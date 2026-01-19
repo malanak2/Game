@@ -8,7 +8,7 @@ var (
 		-1.0, 1.0, 0.0, 0.0, 0.0, // TL
 		1.0, 1.0, 0.0, 1.0, 0.0, // TR
 	}
-	SQUAREIndices = []int32{
+	SQUAREIndices = []uint32{
 		0, 1, 2,
 		1, 2, 3,
 	}

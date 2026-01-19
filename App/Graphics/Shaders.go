@@ -37,7 +37,7 @@ func (t *t_ShaderManager) LoadVertices(vertices []float32) uint32 {
 	return vbo
 }
 
-func (t *t_ShaderManager) LoadVerticesWithIndices(vertices []float32, indices []int32) (uint32, uint32) {
+func (t *t_ShaderManager) LoadVerticesWithIndices(vertices []float32, indices []uint32) (uint32, uint32) {
 	vbo := t.LoadVertices(vertices)
 	var ebo uint32
 	gl.GenBuffers(1, &ebo)
@@ -101,9 +101,10 @@ func (t *t_ShaderManager) LoadVertexShader(shaderSource string) uint32 {
 
 func MakeProgram(shaders ...uint32) uint32 {
 	program := gl.CreateProgram()
-	for shader := range shaders {
-		gl.AttachShader(program, shaders[shader])
+	for _, shader := range shaders {
+		gl.AttachShader(program, shader)
 	}
+	gl.BindFragDataLocation(program, 0, gl.Str("FragColor\x00"))
 	gl.LinkProgram(program)
 	var (
 		success int32

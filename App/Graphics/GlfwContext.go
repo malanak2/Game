@@ -1,7 +1,9 @@
 package Graphics
 
 import (
+	"Game/App/config"
 	_ "embed"
+	"log/slog"
 
 	"github.com/go-gl/gl/v4.6-core/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
@@ -26,11 +28,15 @@ func (g *GlfwContext) Init() error {
 		return err
 	}
 
-	glfw.WindowHint(glfw.ContextVersionMajor, 3)
-	glfw.WindowHint(glfw.ContextVersionMinor, 3)
+	glfw.WindowHint(glfw.ContextVersionMajor, 4)
+	glfw.WindowHint(glfw.ContextVersionMinor, 6)
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
 
+	// Debug
+	if config.Cfg.Dev.DebugMode {
+		glfw.WindowHint(glfw.OpenGLDebugContext, glfw.True)
+	}
 	g.Window, err = glfw.CreateWindow(1920, 1080, "OpenGL Example", nil, nil)
 	if err != nil {
 		glfw.Terminate()
@@ -48,6 +54,8 @@ func (g *GlfwContext) Init() error {
 		glfw.Terminate()
 		return err
 	}
+	version := gl.GoStr(gl.GetString(gl.VERSION))
+	slog.Info("OpenGL version", "v", version)
 
 	gl.Viewport(0, 0, 1920, 1080)
 
@@ -66,4 +74,5 @@ func FramebufferSizeCallback(w *glfw.Window, width int, height int) {
 	gl.Viewport(0, 0, int32(width), int32(height))
 	// Ignore errors, not like we can do much here anyway, better to wait for the proper event loop error bubbling
 	_ = GraphicalManager.Render()
+	Camera.UpdateScreen(width, height)
 }
