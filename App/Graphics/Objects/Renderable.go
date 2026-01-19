@@ -40,11 +40,12 @@ func (r *Renderable) Draw() {
 	}
 	gl.BindVertexArray(r.vao)
 
-	if r.texture != nil {
+	if r.colorLocation != 0 {
+		gl.Uniform4f(r.colorLocation, r.color.R, r.color.G, r.color.B, r.color.A)
+	}
+	if r.indices != nil {
 		gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, nil)
 	} else {
-		gl.Uniform4f(r.colorLocation, r.color.R, r.color.G, r.color.B, r.color.A)
-
 		gl.DrawArrays(gl.TRIANGLES, 0, int32(len(r.vertices)))
 	}
 
