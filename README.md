@@ -5,7 +5,6 @@ This is a basic project that renders stuff in a window using opengl and glfw
 ### TODO:
 - Text Rendering
 - Kind of modular shape
-- Moving stuff around the screen
 
 ## Concepts
 
@@ -16,3 +15,7 @@ This is a basic project that renders stuff in a window using opengl and glfw
   - Manages duplicate loads, etc.
 - ShaderManager
   - The same essentially
+
+
+## Credits
+So many thanks to learnopengl.com, a LOT of the opengl code is taken from there, most of it changed up, but this project would not exist if it was not for this site
