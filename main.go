@@ -17,7 +17,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	// Initialize Renderer
 
 	// Run app
 	app.Run()

@@ -1,4 +1,4 @@
-package Objects
+package Graphics
 
 import (
 	"crypto/sha256"

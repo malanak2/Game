@@ -1,24 +1,22 @@
-package Objects
+package Graphics
 
 import (
-	"Game/App/Graphics"
-
 	"github.com/go-gl/gl/v4.6-core/gl"
-	"github.com/go-gl/glfw/v3.3/glfw"
 )
 
 type GraphicalManager_t struct {
-	*Graphics.GlfwContext
+	*GlfwContext
 
 	objects []*IRenderable
 }
 
 var GraphicalManager *GraphicalManager_t
 
-func InitGraphicalManager() {
+func InitGraphicalManager() error {
 	GraphicalManager = &GraphicalManager_t{}
-	GraphicalManager.GlfwContext = &Graphics.GlfwContext{}
-	GraphicalManager.GlfwContext.Init()
+	GraphicalManager.GlfwContext = &GlfwContext{}
+	err := GraphicalManager.GlfwContext.Init()
+	return err
 }
 
 func (ctx *GraphicalManager_t) DrawBackground() {
@@ -36,15 +34,20 @@ func (ctx *GraphicalManager_t) RemoveObjectRenderer(object IRenderable) {
 	}
 }
 
-func (ctx *GraphicalManager_t) Render() {
+func (ctx *GraphicalManager_t) Render() error {
 	// Clear buffer
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 	ctx.DrawBackground()
 
 	// Draw objects
+	var err error
 	for i := range ctx.objects {
-		(*ctx.objects[i]).Draw()
+		err = (*ctx.objects[i]).Draw()
+		if err != nil {
+			return err
+		}
 	}
+
 	ctx.Window.SwapBuffers()
-	glfw.PollEvents()
+	return nil
 }
