@@ -52,9 +52,6 @@ func (g *GlfwContext) Init() error {
 	gl.Viewport(0, 0, 1920, 1080)
 
 	gl.ClearColor(0.0, 0.0, 0.0, 1)
-	// Disable texture repeating?
-	//gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
-	//gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 
 	return nil
 }

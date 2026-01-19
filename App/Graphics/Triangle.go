@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/go-gl/gl/v4.6-core/gl"
+	"github.com/go-gl/mathgl/mgl32"
 )
 
 type Triangle struct {
@@ -52,19 +53,30 @@ func NewTriangleTextured(path string) Triangle {
 	fragment := ShaderManager.LoadFragmentShader(`basicTexture`)
 
 	r.program = MakeProgram(vertex, fragment)
+	r.colorLocation = gl.GetUniformLocation(r.program, gl.Str("inCol\000"))
+
+	r.matrixLoc = gl.GetUniformLocation(r.program, gl.Str("transform\x00"))
+
+	r.perspLocation = gl.GetUniformLocation(r.program, gl.Str("perspective\000"))
+
+	r.cameraLocation = gl.GetUniformLocation(r.program, gl.Str("camera\x00"))
+
+	gl.UniformMatrix4fv(r.perspLocation, 1, false, &MatPerspective[0])
+	gl.UniformMatrix4fv(r.cameraLocation, 1, false, &camera[0])
 
 	gl.GenVertexArrays(1, &r.vao)
 
 	gl.BindVertexArray(r.vao)
 
-	cStr := gl.Str("inCol\000")
-	r.colorLocation = gl.GetUniformLocation(r.program, cStr)
-	fmt.Println(*cStr)
 	var err error
 	r.texture, err = TextureManager.GetTexture(path)
 	if err != nil {
 		panic(err)
 	}
+
+	r.matrix = mgl32.Ident4()
+
+	r.scale = 0.5
 
 	r.vertices = SQUAREVertices
 

@@ -114,6 +114,7 @@ func MakeProgram(shaders ...uint32) uint32 {
 		gl.GetProgramInfoLog(program, 512, nil, &infoLog[0])
 		panic(gl.GoStr(&infoLog[0]))
 	}
+
 	return program
 }
 
