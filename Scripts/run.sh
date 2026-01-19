@@ -3,6 +3,7 @@
 # go build -o build/app.exe .
 # ./build/app.exe
 rm -rf build/Resources
+rm build/app
 cp -r Resources build/Resources
 go build -o build/app .
 ./build/app

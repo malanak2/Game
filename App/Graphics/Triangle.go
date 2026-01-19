@@ -2,6 +2,7 @@ package Graphics
 
 import (
 	"github.com/go-gl/gl/v4.6-core/gl"
+	"github.com/go-gl/mathgl/mgl32"
 )
 
 type Triangle struct {
@@ -10,21 +11,9 @@ type Triangle struct {
 
 func NewTriangle(c Color) Triangle {
 	r := Renderable{}
-	vertex := ShaderManager.LoadVertexShader(`#version 330 core
-	layout (location = 0) in vec3 aPos;
-	void main()
-	{
-	   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
-	}` + "\000")
+	vertex := ShaderManager.LoadVertexShader(`basicColor`)
 
-	fragment := ShaderManager.LoadFragmentShader(`#version 330 core
-	out vec4 FragColor;
-	uniform vec4 inCol;	
-
-	void main()
-	{
-		FragColor = inCol;
-	}` + "\000")
+	fragment := ShaderManager.LoadFragmentShader(`basicColor`)
 
 	r.program = MakeProgram(vertex, fragment)
 
@@ -56,38 +45,35 @@ func NewTriangle(c Color) Triangle {
 func NewTriangleTextured(path string) Triangle {
 	r := Renderable{}
 	path = "Resources/" + path
-	vertex := ShaderManager.LoadVertexShader(`#version 460 core
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec2 aTexCoord;
-out vec2 TexCoord;
-void main()
-{
-    gl_Position = vec4(aPos, 1.0);
-    TexCoord = aTexCoord;
-}` + "\000")
+	vertex := ShaderManager.LoadVertexShader(`basicTexture`)
 
-	fragment := ShaderManager.LoadFragmentShader(`#version 460 core
-	out vec4 FragColor;
-	uniform sampler2D textureIn;
-	in vec2 TexCoord;
-	void main()
-	{
-		FragColor = texture(textureIn, TexCoord);
-	}` + "\000")
+	fragment := ShaderManager.LoadFragmentShader(`basicTexture`)
 
 	r.program = MakeProgram(vertex, fragment)
+	r.colorLocation = gl.GetUniformLocation(r.program, gl.Str("inCol\000"))
+
+	r.matrixLoc = gl.GetUniformLocation(r.program, gl.Str("transform\x00"))
+
+	r.perspLocation = gl.GetUniformLocation(r.program, gl.Str("perspective\000"))
+
+	r.cameraLocation = gl.GetUniformLocation(r.program, gl.Str("camera\x00"))
+
+	gl.UniformMatrix4fv(r.perspLocation, 1, false, &MatPerspective[0])
+	gl.UniformMatrix4fv(r.cameraLocation, 1, false, &camera[0])
 
 	gl.GenVertexArrays(1, &r.vao)
 
 	gl.BindVertexArray(r.vao)
 
-	cStr := gl.Str("inCol\000")
-	r.colorLocation = gl.GetUniformLocation(r.program, cStr)
 	var err error
 	r.texture, err = TextureManager.GetTexture(path)
 	if err != nil {
 		panic(err)
 	}
+
+	r.matrix = mgl32.Ident4()
+
+	r.scale = 0.5
 
 	r.vertices = SQUAREVertices
 

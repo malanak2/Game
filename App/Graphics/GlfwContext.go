@@ -16,6 +16,8 @@ type GlfwContext struct {
 	Programs []uint32
 
 	Vao []uint32
+
+	width, height int32
 }
 
 func (g *GlfwContext) Init() error {
@@ -24,8 +26,8 @@ func (g *GlfwContext) Init() error {
 		return err
 	}
 
-	glfw.WindowHint(glfw.ContextVersionMajor, 4)
-	glfw.WindowHint(glfw.ContextVersionMinor, 6)
+	glfw.WindowHint(glfw.ContextVersionMajor, 3)
+	glfw.WindowHint(glfw.ContextVersionMinor, 3)
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
 
@@ -49,7 +51,8 @@ func (g *GlfwContext) Init() error {
 
 	gl.Viewport(0, 0, 1920, 1080)
 
-	gl.ClearColor(0.0, 0.0, 1.0, 1)
+	gl.ClearColor(0.0, 0.0, 0.0, 1)
+
 	return nil
 }
 
@@ -61,5 +64,6 @@ func (g *GlfwContext) Destroy() {
 // FramebufferSizeCallback Called when resizing window
 func FramebufferSizeCallback(w *glfw.Window, width int, height int) {
 	gl.Viewport(0, 0, int32(width), int32(height))
-	GraphicalManager.Render()
+	// Ignore errors, not like we can do much here anyway, better to wait for the proper event loop error bubbling
+	_ = GraphicalManager.Render()
 }

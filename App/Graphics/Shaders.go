@@ -2,6 +2,9 @@ package Graphics
 
 import (
 	"crypto/sha256"
+	"io"
+	"log/slog"
+	"os"
 
 	"github.com/go-gl/gl/v4.6-core/gl"
 )
@@ -50,22 +53,36 @@ func (t *t_ShaderManager) checkCache(shaderSource string) (uint32, []byte) {
 
 	hash := first.Sum(nil)
 	if v, ok := t.shaders[string(hash)]; ok {
+		slog.Info("Loading cached shader", "hash", string(hash))
 		return v, hash
 	}
 	return 0, hash
 }
 
 func (t *t_ShaderManager) addToCache(shaderSource []byte, id uint32) {
+	slog.Info("Caching shader", "hash", string(shaderSource))
 	t.shaders[string(shaderSource)] = id
 }
 
 func (t *t_ShaderManager) LoadVertexShader(shaderSource string) uint32 {
+	shaderSource = "Resources/Shaders/" + shaderSource + ".vertex"
 	v, hash := t.checkCache(shaderSource)
 	if v != 0 {
 		return v
 	}
+	// Load File
+	file, err := os.Open(shaderSource)
+	if err != nil {
+		slog.Error("Vertex shader at this path doesnt exist", "path", shaderSource)
+		return 0
+	}
+	defer file.Close()
 	shader := gl.CreateShader(gl.VERTEX_SHADER)
-	sources, freeSources := gl.Strs(shaderSource)
+	in, err := io.ReadAll(file)
+	if err != nil {
+		slog.Error("Failed to read from vertex shader", "path", shaderSource)
+	}
+	sources, freeSources := gl.Strs(string(in) + "\000")
 	defer freeSources()
 	gl.ShaderSource(shader, 1, sources, nil)
 	gl.CompileShader(shader)
@@ -97,18 +114,29 @@ func MakeProgram(shaders ...uint32) uint32 {
 		gl.GetProgramInfoLog(program, 512, nil, &infoLog[0])
 		panic(gl.GoStr(&infoLog[0]))
 	}
+
 	return program
 }
 
 func (t *t_ShaderManager) LoadFragmentShader(shaderSource string) uint32 {
-
+	shaderSource = "Resources/Shaders/" + shaderSource + ".fragment"
 	v, hash := t.checkCache(shaderSource)
 	if v != 0 {
 		return v
 	}
-
+	// Load File
+	file, err := os.Open(shaderSource)
+	if err != nil {
+		slog.Error("Fragment shader at this path doesnt exist", "path", shaderSource)
+		return 0
+	}
+	defer file.Close()
 	shader := gl.CreateShader(gl.FRAGMENT_SHADER)
-	sources, freeSources := gl.Strs(shaderSource)
+	in, err := io.ReadAll(file)
+	if err != nil {
+		slog.Error("Failed to read from fragment shader", "path", shaderSource)
+	}
+	sources, freeSources := gl.Strs(string(in) + "\000")
 	defer freeSources()
 	gl.ShaderSource(shader, 1, sources, nil)
 	gl.CompileShader(shader)

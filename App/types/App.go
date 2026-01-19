@@ -2,6 +2,7 @@ package types
 
 import (
 	"Game/App/Graphics"
+	config2 "Game/App/config"
 	"time"
 
 	"github.com/go-gl/gl/v4.6-core/gl"
@@ -9,36 +10,37 @@ import (
 )
 
 type App struct {
-	config *Config
-
 	lastFrameTime time.Time
 
 	fps float64
 }
 
-func closeApp() {
+func closeApp() error {
 	Graphics.GraphicalManager.Window.SetShouldClose(true)
+	return nil
 }
 
 var wfState bool
 
-func ToggleWireFrame() {
+func ToggleWireFrame() error {
 	if wfState {
 		gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
 	} else {
 		gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
 	}
 	wfState = !wfState
+	return nil
 }
 
-func spawnTexturedTriangle() {
+func spawnTexturedTriangle() error {
 	ti := Graphics.NewTriangleTextured("Surprise.png")
 	ti.Render(true)
 	//a.tris = append(a.tris, ti)
+	return nil
 }
 
 func InitApp(path *string) (*App, error) {
-	config, err := NewConfig(*path)
+	err := config2.InitConfig(*path)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +61,7 @@ func InitApp(path *string) (*App, error) {
 	KeybindManager.AddOnPressed(glfw.KeyW, ToggleWireFrame)
 	KeybindManager.AddOnPressed(glfw.KeySpace, spawnTexturedTriangle)
 
-	app := App{config, time.Now(), 0.0}
+	app := App{time.Now(), 0.0}
 	return &app, nil
 }
 

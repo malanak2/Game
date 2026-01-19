@@ -89,6 +89,7 @@ func (t *TextureManager_t) loadTexture(path string) (*LoadedTexture, error) {
 			return nil, err
 		}
 	}
+
 	rgba := image.NewRGBA((*texture.img).Bounds())
 	if rgba.Stride != rgba.Rect.Size().X*4 {
 		return nil, fmt.Errorf("unsupported stride")
