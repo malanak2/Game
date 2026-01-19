@@ -12,21 +12,9 @@ type Triangle struct {
 
 func NewTriangle(c Color) Triangle {
 	r := Renderable{}
-	vertex := ShaderManager.LoadVertexShader(`#version 330 core
-	layout (location = 0) in vec3 aPos;
-	void main()
-	{
-	   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
-	}` + "\000")
+	vertex := ShaderManager.LoadVertexShader(`basicColor`)
 
-	fragment := ShaderManager.LoadFragmentShader(`#version 330 core
-	out vec4 FragColor;
-	uniform vec4 inCol;	
-
-	void main()
-	{
-		FragColor = inCol;
-	}` + "\000")
+	fragment := ShaderManager.LoadFragmentShader(`basicColor`)
 
 	r.program = MakeProgram(vertex, fragment)
 
@@ -59,24 +47,9 @@ func NewTriangle(c Color) Triangle {
 func NewTriangleTextured(path string) Triangle {
 	r := Renderable{}
 	path = "Resources/" + path
-	vertex := ShaderManager.LoadVertexShader(`#version 460 core
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec2 aTexCoord;
-out vec2 TexCoord;
-void main()
-{
-    gl_Position = vec4(aPos, 1.0);
-    TexCoord = aTexCoord;
-}` + "\000")
+	vertex := ShaderManager.LoadVertexShader(`basicTexture`)
 
-	fragment := ShaderManager.LoadFragmentShader(`#version 460 core
-	out vec4 FragColor;
-	uniform sampler2D textureIn;
-	in vec2 TexCoord;
-	void main()
-	{
-		FragColor = texture(textureIn, TexCoord);
-	}` + "\000")
+	fragment := ShaderManager.LoadFragmentShader(`basicTexture`)
 
 	r.program = MakeProgram(vertex, fragment)
 

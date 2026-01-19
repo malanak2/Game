@@ -16,25 +16,28 @@ type App struct {
 	fps float64
 }
 
-func closeApp() {
+func closeApp() error {
 	Graphics.GraphicalManager.Window.SetShouldClose(true)
+	return nil
 }
 
 var wfState bool
 
-func ToggleWireFrame() {
+func ToggleWireFrame() error {
 	if wfState {
 		gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
 	} else {
 		gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
 	}
 	wfState = !wfState
+	return nil
 }
 
-func spawnTexturedTriangle() {
+func spawnTexturedTriangle() error {
 	ti := Graphics.NewTriangleTextured("Surprise.png")
 	ti.Render(true)
 	//a.tris = append(a.tris, ti)
+	return nil
 }
 
 func InitApp(path *string) (*App, error) {

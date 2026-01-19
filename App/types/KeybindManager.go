@@ -1,6 +1,7 @@
 package types
 
 import (
+	"Game/App/types/Util"
 	"errors"
 	"log/slog"
 
@@ -13,7 +14,7 @@ func InitKeybindManager() {
 	KeybindManager = KeybindManagerT{make(map[glfw.Key]*KeyBind)}
 }
 
-type Func func()
+type Func func() error
 
 type KeybindManagerT struct {
 	binds map[glfw.Key]*KeyBind
@@ -163,20 +164,32 @@ func (k *KeyBind) RemoveOnReleased(index int) error {
 }
 
 func (k *KeyBind) HandleKeyBind(key glfw.Action) {
-	if k.lastState == glfw.Press { // Was
+	var err error
+	if k.lastState == glfw.Press {
 		k.lastState = key
 		for _, v := range k.onHeld {
-			v()
+			err = v()
+			if err != nil {
+				slog.Error("Error calling handlekeybind in onHeld", "functionName", Util.GetFunctionName(v), "error", err.Error())
+			}
 		}
 	} else if key == glfw.Release {
 		k.lastState = key
 		for _, v := range k.onReleased {
-			v()
+			err = v()
+			if err != nil {
+				slog.Error("Error calling handlekeybind in onReleased", "functionName", Util.GetFunctionName(v), "error", err.Error())
+			}
 		}
 	} else {
 		k.lastState = key
 		for _, v := range k.onPressed {
-			v()
+			err = v()
+			if err != nil {
+				slog.Error("Error calling handlekeybind in onPressed", "functionName", Util.GetFunctionName(v), "error", err.Error())
+			}
 		}
+
 	}
+
 }

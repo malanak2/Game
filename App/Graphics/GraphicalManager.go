@@ -4,29 +4,29 @@ import (
 	"github.com/go-gl/gl/v4.6-core/gl"
 )
 
-type GraphicalManager_t struct {
+type GraphicalmanagerT struct {
 	*GlfwContext
 
 	objects []*IRenderable
 }
 
-var GraphicalManager *GraphicalManager_t
+var GraphicalManager *GraphicalmanagerT
 
 func InitGraphicalManager() error {
-	GraphicalManager = &GraphicalManager_t{}
+	GraphicalManager = &GraphicalmanagerT{}
 	GraphicalManager.GlfwContext = &GlfwContext{}
 	err := GraphicalManager.GlfwContext.Init()
 	return err
 }
 
-func (ctx *GraphicalManager_t) DrawBackground() {
+func (ctx *GraphicalmanagerT) DrawBackground() {
 }
 
-func (ctx *GraphicalManager_t) AddObjectRenderer(object IRenderable) {
+func (ctx *GraphicalmanagerT) AddObjectRenderer(object IRenderable) {
 	ctx.objects = append(ctx.objects, &object)
 }
 
-func (ctx *GraphicalManager_t) RemoveObjectRenderer(object IRenderable) {
+func (ctx *GraphicalmanagerT) RemoveObjectRenderer(object IRenderable) {
 	for i := range ctx.objects {
 		if ctx.objects[i] == &object {
 			ctx.objects = append(ctx.objects[:i], ctx.objects[i+1:]...)
@@ -34,7 +34,7 @@ func (ctx *GraphicalManager_t) RemoveObjectRenderer(object IRenderable) {
 	}
 }
 
-func (ctx *GraphicalManager_t) Render() error {
+func (ctx *GraphicalmanagerT) Render() error {
 	// Clear buffer
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 	ctx.DrawBackground()
