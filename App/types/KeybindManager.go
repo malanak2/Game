@@ -1,8 +1,8 @@
 package types
 
 import (
-	"Game/App/types/Util"
 	"errors"
+	"github.com/malanak2/Game/App/types/Util"
 	"log/slog"
 
 	"github.com/go-gl/glfw/v3.3/glfw"

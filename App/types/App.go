@@ -1,8 +1,8 @@
 package types
 
 import (
-	"Game/App/Graphics"
-	config2 "Game/App/config"
+	"github.com/malanak2/Game/App/Graphics"
+	config2 "github.com/malanak2/Game/App/config"
 
 	"github.com/go-gl/gl/v4.6-core/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"

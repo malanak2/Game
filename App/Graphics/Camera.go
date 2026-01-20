@@ -1,8 +1,9 @@
 package Graphics
 
 import (
-	config2 "Game/App/config"
 	"math"
+
+	config2 "github.com/malanak2/Game/App/config"
 
 	"github.com/go-gl/mathgl/mgl32"
 )

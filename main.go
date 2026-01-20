@@ -1,9 +1,10 @@
 package main
 
 import (
-	"Game/App/types"
 	"flag"
 	"runtime"
+
+	"github.com/malanak2/Game/App/types"
 )
 
 func init() {
