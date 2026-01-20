@@ -75,9 +75,13 @@ func LoadFont(fontPath string) error {
 		}
 		width := (bounds.Max.X - bounds.Min.X).Ceil()
 		height := (bounds.Max.Y - bounds.Min.Y).Ceil()
-		if width == 0 || height == 0 {
+		if (width == 0 || height == 0) && c != ' ' {
 			slog.Info("Skipping character with no visible representation", "char", string(c))
 			continue
+		}
+		if c == ' ' {
+			width = 20
+			height = 26
 		}
 		rgba := image.NewAlpha(image.Rect(0, 0, width, height))
 		dot := fixed.Point26_6{
@@ -113,21 +117,24 @@ func LoadFont(fontPath string) error {
 		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
 		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
-
+		bearingX := int32(bounds.Min.X.Floor())
+		bearingY := int32(-bounds.Min.Y.Floor())
+		if c == ' ' {
+			bearingX = 2
+			bearingY = 35
+		}
 		character := Character{
 			TextureID: texture,
 			Size:      [2]int32{int32(width), int32(height)},
-			Bearing:   [2]int32{int32(bounds.Min.X.Floor()), int32(-bounds.Min.Y.Floor())},
+			Bearing:   [2]int32{bearingX, bearingY},
 			Advance:   uint32(advance.Floor()),
 		}
 
 		CheckForGLError()
 
-		slog.Info("Loaded character", "char", string(c), "size", character.Size, "bearing", character.Bearing, "advance", character.Advance, "texID", character.TextureID, "font", fontPath)
-
 		FontMgr.Characters[og][c] = character
 	}
-	slog.Info("Loaded font", "font", fontPath, "test", FontMgr.Characters[fontPath])
+	slog.Info("Loaded font", "font", fontPath)
 
 	gl.BindTexture(gl.TEXTURE_2D, 0)
 	return nil

@@ -51,7 +51,7 @@ func (ctx *GraphicalmanagerT) Render(fps int, showFps bool) error {
 	}
 	if showFps {
 		// Draw FPS
-		err = TextRenderer.RenderText("FPS: "+strconv.Itoa(fps), 100, 540, 1.0, Color{1, 1, 1, 1}, "Default")
+		err = TextRenderer.RenderText(strconv.Itoa(fps)+" fps", 100, 540, 1.0, Color{1, 1, 1, 1}, "Default")
 		if err != nil {
 			return err
 		}

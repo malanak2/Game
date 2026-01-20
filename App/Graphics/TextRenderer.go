@@ -69,7 +69,7 @@ func (r *TextRendererT) RenderText(text string, x, y float32, scale float32, col
 			continue
 		}
 		var xpos = x + float32(ch.Bearing[0])*scale
-		ypos := y - float32(ch.Size[1]-ch.Bearing[0])*scale
+		ypos := y - float32(ch.Size[1]-ch.Bearing[1])*scale
 
 		w := float32(ch.Size[0]) * scale
 		h := float32(ch.Size[1]) * scale
