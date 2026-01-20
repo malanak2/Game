@@ -6,7 +6,7 @@ import (
 
 	"github.com/malanak2/Game/App/config"
 
-	"github.com/go-gl/gl/v4.6-core/gl"
+	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
 )
 
@@ -26,8 +26,8 @@ func (g *GlfwContext) Init() error {
 		return err
 	}
 
-	glfw.WindowHint(glfw.ContextVersionMajor, 4)
-	glfw.WindowHint(glfw.ContextVersionMinor, 6)
+	glfw.WindowHint(glfw.ContextVersionMajor, 3)
+	glfw.WindowHint(glfw.ContextVersionMinor, 3)
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
 
@@ -55,6 +55,8 @@ func (g *GlfwContext) Init() error {
 	}
 	if !config.Cfg.Main.Vsync {
 		glfw.SwapInterval(0)
+	} else {
+		glfw.SwapInterval(1)
 	}
 	version := gl.GoStr(gl.GetString(gl.VERSION))
 	slog.Info("OpenGL version", "v", version)

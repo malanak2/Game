@@ -1,10 +1,12 @@
 package types
 
 import (
+	"log/slog"
+
 	"github.com/malanak2/Game/App/Graphics"
 	config2 "github.com/malanak2/Game/App/config"
 
-	"github.com/go-gl/gl/v4.6-core/gl"
+	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
 )
 
@@ -40,6 +42,17 @@ func toggleFps() error {
 	return nil
 }
 
+func toggleVsync() error {
+	if config2.Cfg.Main.Vsync {
+		glfw.SwapInterval(0)
+		config2.Cfg.Main.Vsync = false
+	} else {
+		glfw.SwapInterval(1)
+		config2.Cfg.Main.Vsync = true
+	}
+	return nil
+}
+
 func InitApp(path *string) error {
 	err := config2.InitConfig(*path)
 	if err != nil {
@@ -47,23 +60,33 @@ func InitApp(path *string) error {
 	}
 
 	// Initialize managers
+	slog.Info("Initializing Graphics Manager")
 	err = Graphics.InitGraphicalManager()
 	if err != nil {
+		slog.Error("Error initializing Graphics Manager")
 		return err
 	}
+	slog.Info("Initializing Shader Manager")
 	Graphics.InitShaderManager()
+	slog.Info("Initializing Texture Manager")
 	Graphics.InitTextureManager()
+	slog.Info("Initializing Object Manager")
 	Graphics.InitObjectManager()
+	slog.Info("Initializing Camera")
 	Graphics.InitCamera([3]float32{0, 0, 0}, [3]float32{0, 1, 0})
 
+	slog.Info("Initializing Font Manager")
 	Graphics.InitFontManager()
+	slog.Info("Initializing Text Renderer")
 	err = Graphics.InitTextRenderer()
 	if err != nil {
 		return err
 	}
 	InitKeybindManager()
 
+	// Dev Keybinds
 	if config2.Cfg.Dev.Dev {
+		slog.Info("Initializing Development Mode")
 		KeybindManager.AddOnHeld(glfw.KeyW, func() error {
 			Graphics.Camera.MoveCamera(Graphics.CameraForward, float32(AppState.DeltaTime))
 			return nil
@@ -92,9 +115,14 @@ func InitApp(path *string) error {
 		KeybindManager.AddOnPressed(glfw.KeyF1, ToggleWireFrame)
 		KeybindManager.AddOnPressed(glfw.KeyF2, spawnTexturedTriangle)
 		KeybindManager.AddOnPressed(glfw.KeyF3, toggleFps)
+		KeybindManager.AddOnPressed(glfw.KeyF4, toggleVsync)
 	}
+	// Load default font
+	slog.Info("Initialization Complete")
+	slog.Info("Loading default font")
 	err = Graphics.LoadFont("Default")
 	if err != nil {
+		slog.Error("Error loading default font")
 		return err
 	}
 	wfState = false
@@ -105,6 +133,7 @@ func InitApp(path *string) error {
 func Run() error {
 	defer Graphics.GraphicalManager.Destroy()
 	var err error
+	slog.Info("Entering main loop")
 	for !Graphics.GraphicalManager.Window.ShouldClose() {
 		glfw.PollEvents()
 
@@ -124,6 +153,7 @@ func Run() error {
 		if err != nil {
 			return err
 		}
+
 		Graphics.CheckForGLError()
 	}
 	return nil

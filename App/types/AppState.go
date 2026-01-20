@@ -2,7 +2,6 @@ package types
 
 import (
 	"container/list"
-	"log/slog"
 
 	"github.com/go-gl/glfw/v3.3/glfw"
 )
@@ -28,11 +27,10 @@ func (a *AppStateT) calculateFps() {
 	fps := int(1.0 / (a.DeltaTime * 1000))
 	a.FpsHistory.PushBack(fps)
 	if a.FpsHistory.Len() > 10 {
-		slog.Info("Fps reached cap")
 		a.FpsHistory.Remove(a.FpsHistory.Front())
 	}
 	total := 0
-	for i := a.FpsHistory.Front(); i != nil; i.Next() {
+	for i := a.FpsHistory.Front(); i != nil; i = i.Next() {
 		total += i.Value.(int)
 	}
 	if a.FpsHistory.Len() == 0 {

@@ -3,7 +3,8 @@ package Graphics
 import (
 	"strconv"
 
-	"github.com/go-gl/gl/v4.6-core/gl"
+	"github.com/go-gl/gl/v3.3-core/gl"
+	"github.com/malanak2/Game/App/config"
 )
 
 type GraphicalmanagerT struct {
@@ -55,6 +56,10 @@ func (ctx *GraphicalmanagerT) Render(fps int, showFps bool) error {
 		if err != nil {
 			return err
 		}
+	}
+
+	if config.Cfg.Dev.Dev {
+		err = TextRenderer.RenderText("F1: Toggle wireframe, F2: Spawn textured triangle, F3: Toggle FPS, F4: Toggle VSync, Escape: Quit", 10, 1000, 0.5, Color{1, 1, 1, 1}, "Default")
 	}
 
 	ctx.Window.SwapBuffers()

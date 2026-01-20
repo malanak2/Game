@@ -6,7 +6,7 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/go-gl/gl/v4.6-core/gl"
+	"github.com/go-gl/gl/v3.3-core/gl"
 )
 
 type t_ShaderManager struct {
@@ -45,14 +45,12 @@ func (t *t_ShaderManager) checkCache(shaderSource string) (uint32, []byte) {
 
 	hash := first.Sum(nil)
 	if v, ok := t.shaders[string(hash)]; ok {
-		slog.Info("Loading cached shader", "hash", string(hash))
 		return v, hash
 	}
 	return 0, hash
 }
 
 func (t *t_ShaderManager) addToCache(shaderSource []byte, id uint32) {
-	slog.Info("Caching shader", "hash", string(shaderSource))
 	t.shaders[string(shaderSource)] = id
 }
 
@@ -103,7 +101,6 @@ func MakeProgram(reusableShaders bool, shaders ...uint32) uint32 {
 	program := gl.CreateProgram()
 	CheckForGLError()
 	for _, shader := range shaders {
-		slog.Info("Loading shader", "shader", shader)
 		gl.AttachShader(program, shader)
 	}
 	CheckForGLError()
