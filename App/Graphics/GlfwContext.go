@@ -37,6 +37,7 @@ func (g *GlfwContext) Init() error {
 	}
 	g.Window, err = glfw.CreateWindow(1920, 1080, "OpenGL Example", nil, nil)
 	if err != nil {
+		slog.Error("Failed to create GLFW window", "err", err)
 		glfw.Terminate()
 		return err
 	}
@@ -47,6 +48,7 @@ func (g *GlfwContext) Init() error {
 
 	err = gl.Init()
 	if err != nil {
+		slog.Error("Failed to init GL", "err", err)
 		g.Window.Destroy()
 		glfw.Terminate()
 		return err

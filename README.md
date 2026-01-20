@@ -2,6 +2,12 @@
 
 This is a basic project that renders stuff in a window using opengl and glfw
 
+## Troubleshooting
+If windows says that the app cannot be launched on your device, try compiling with these compiler flags
+```
+-ldflags="-s -w"
+```
+
 ### TODO:
 - Text Rendering
 - Kind of modular shape
