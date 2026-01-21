@@ -52,10 +52,8 @@ func (r *TextRendererT) RenderText(text string, x, y float32, scale float32, col
 
 	gl.Uniform3f(gl.GetUniformLocation(TextRenderer.TextProgram, gl.Str("textColor\x00")), color.R, color.G, color.B)
 	textLoc := gl.GetUniformLocation(TextRenderer.TextProgram, gl.Str("text\x00"))
-	// 2. Tell the shader: "Look at Texture Unit 0"
 	gl.Uniform1i(textLoc, 0)
 
-	// 3. Make sure you are actually using Texture Unit 0
 	gl.ActiveTexture(gl.TEXTURE0)
 	gl.ActiveTexture(gl.TEXTURE0)
 
@@ -84,10 +82,8 @@ func (r *TextRendererT) RenderText(text string, x, y float32, scale float32, col
 			xpos + w, ypos + h, 1.0, 0.0,
 		}
 
-		// render glyph texture over quad
 		gl.BindTexture(gl.TEXTURE_2D, ch.TextureID)
 		CheckForGLError()
-		// update content of VBO memory
 		gl.BindBuffer(gl.ARRAY_BUFFER, r.Vbo)
 		CheckForGLError()
 		gl.BufferSubData(gl.ARRAY_BUFFER, 0, len(vertices)*4, gl.Ptr(&vertices[0])) // be sure to use glBufferSubData and not glBufferData
@@ -95,10 +91,8 @@ func (r *TextRendererT) RenderText(text string, x, y float32, scale float32, col
 
 		gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 		CheckForGLError()
-		// render quad
 		gl.DrawArrays(gl.TRIANGLES, 0, 6)
 		CheckForGLError()
-		// now advance cursors for next glyph (note that advance is number of 1/64 pixels)
 		x += float32(ch.Advance) * scale // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
 
 		CheckForGLError()

@@ -60,14 +60,14 @@ func (r *Renderable) Draw() error {
 
 	// Apply matrix if got
 	if r.matrixLoc != -1 {
-		matrix := r.matrix.Mul4(mgl32.Scale3D(r.scale, r.scale, 1))
+		matrix := r.matrix.Mul4(mgl32.Scale3D(r.scale, r.scale, r.scale))
 		//matrix = mgl32.HomogRotate3DY(float32(glfw.GetTime()))
 		gl.UniformMatrix4fv(r.matrixLoc, 1, false, &matrix[0])
 		gl.UniformMatrix4fv(r.perspLocation, 1, false, &Camera.ProjectionMatrix[0])
 		gl.UniformMatrix4fv(r.cameraLocation, 1, false, &Camera.ViewMatrix[0])
 	}
 
-	if r.indices != nil {
+	if r.ebo != 0 {
 		gl.DrawElements(gl.TRIANGLES, int32(len(r.indices)), gl.UNSIGNED_INT, nil)
 	} else {
 		gl.DrawArrays(gl.TRIANGLES, 0, int32(len(r.vertices)))

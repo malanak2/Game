@@ -65,7 +65,9 @@ func (g *GlfwContext) Init() error {
 
 	gl.ClearColor(0.1, 0.1, 0.1, 1)
 	gl.Enable(gl.BLEND)
+	gl.Enable(gl.DEPTH_TEST)
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+
 	return nil
 }
 

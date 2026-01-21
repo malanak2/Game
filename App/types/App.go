@@ -3,6 +3,7 @@ package types
 import (
 	"log/slog"
 
+	"github.com/go-gl/mathgl/mgl32"
 	"github.com/malanak2/Game/App/Graphics"
 	config2 "github.com/malanak2/Game/App/config"
 
@@ -32,6 +33,14 @@ func ToggleWireFrame() error {
 
 func spawnTexturedTriangle() error {
 	ti := Graphics.NewTriangleTextured("Surprise.png")
+	ti.Render(true)
+	//a.tris = append(a.tris, ti)
+	return nil
+}
+
+func spawnTexturedCube() error {
+	vec := mgl32.NewVecN(3)
+	ti := Graphics.NewCube(vec.Vec3(), "trump.png")
 	ti.Render(true)
 	//a.tris = append(a.tris, ti)
 	return nil
@@ -114,9 +123,13 @@ func InitApp(path *string) error {
 		KeybindManager.AddOnPressed(glfw.KeyEscape, closeApp)
 		KeybindManager.AddOnPressed(glfw.KeyF1, ToggleWireFrame)
 		KeybindManager.AddOnPressed(glfw.KeyF2, spawnTexturedTriangle)
-		KeybindManager.AddOnPressed(glfw.KeyF3, toggleFps)
-		KeybindManager.AddOnPressed(glfw.KeyF4, toggleVsync)
+		KeybindManager.AddOnPressed(glfw.KeyF3, spawnTexturedCube)
+		KeybindManager.AddOnPressed(glfw.KeyF4, toggleFps)
+		KeybindManager.AddOnPressed(glfw.KeyF5, toggleVsync)
 	}
+	Graphics.GraphicalManager.Window.SetInputMode(glfw.CursorMode, glfw.CursorDisabled)
+	Graphics.GraphicalManager.Window.SetCursorPosCallback(Graphics.MouseCallback)
+	Graphics.GraphicalManager.Window.SetScrollCallback(Graphics.ScrollWheelCallback)
 	// Load default font
 	slog.Info("Initialization Complete")
 	slog.Info("Loading default font")
