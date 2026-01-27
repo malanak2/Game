@@ -46,7 +46,7 @@ func NewTriangle(c Color) Triangle {
 }
 func NewTriangleTextured(path string) Triangle {
 	r := Renderable{}
-	path = "Resources/" + path
+	path = "Resources/Textures/" + path
 	vertex := ShaderManager.LoadVertexShader(`basicTexture`)
 
 	fragment := ShaderManager.LoadFragmentShader(`basicTexture`)
@@ -58,11 +58,11 @@ func NewTriangleTextured(path string) Triangle {
 
 	r.matrixLoc = gl.GetUniformLocation(r.program, gl.Str("transform\x00"))
 
-	r.perspLocation = gl.GetUniformLocation(r.program, gl.Str("projection\000"))
+	r.perspLoc = gl.GetUniformLocation(r.program, gl.Str("projection\000"))
 
-	r.cameraLocation = gl.GetUniformLocation(r.program, gl.Str("camera\x00"))
+	r.cameraLoc = gl.GetUniformLocation(r.program, gl.Str("camera\x00"))
 	MatPerspective := mgl32.Perspective(mgl32.DegToRad(config.Cfg.Main.Fov), float32(1920)/1080, 0.1, 100)
-	gl.UniformMatrix4fv(r.perspLocation, 1, false, &MatPerspective[0])
+	gl.UniformMatrix4fv(r.perspLoc, 1, false, &MatPerspective[0])
 	gl.GenVertexArrays(1, &r.vao)
 
 	gl.BindVertexArray(r.vao)

@@ -38,9 +38,16 @@ type Renderable struct {
 
 	matrixLoc int32
 
-	perspLocation int32
+	perspLoc int32
 
-	cameraLocation int32
+	cameraLoc int32
+
+	translationLoc int32
+	Translation    mgl32.Vec3
+
+	rotationLoc int32
+	// Degrees
+	Rotation mgl32.Vec3
 }
 
 func (r *Renderable) Draw() error {
@@ -60,11 +67,22 @@ func (r *Renderable) Draw() error {
 
 	// Apply matrix if got
 	if r.matrixLoc != -1 {
+		// Maybe could optimize - test with more
 		matrix := r.matrix.Mul4(mgl32.Scale3D(r.scale, r.scale, r.scale))
-		//matrix = mgl32.HomogRotate3DY(float32(glfw.GetTime()))
 		gl.UniformMatrix4fv(r.matrixLoc, 1, false, &matrix[0])
-		gl.UniformMatrix4fv(r.perspLocation, 1, false, &Camera.ProjectionMatrix[0])
-		gl.UniformMatrix4fv(r.cameraLocation, 1, false, &Camera.ViewMatrix[0])
+		gl.UniformMatrix4fv(r.perspLoc, 1, false, &Camera.ProjectionMatrix[0])
+		gl.UniformMatrix4fv(r.cameraLoc, 1, false, &Camera.ViewMatrix[0])
+	}
+	if r.translationLoc != -1 {
+		matTranslate := mgl32.Translate3D(r.Translation.X(), r.Translation.Y(), r.Translation.Z())
+		gl.UniformMatrix4fv(r.translationLoc, 1, false, &matTranslate[0])
+	}
+	if r.rotationLoc != -1 {
+		mat := mgl32.Ident4()
+		mat = mat.Mul4(mgl32.Rotate3DX(r.Rotation.X()).Mat4())
+		mat = mat.Mul4(mgl32.Rotate3DY(r.Rotation.Y()).Mat4())
+		mat = mat.Mul4(mgl32.Rotate3DZ(r.Rotation.Z()).Mat4())
+		gl.UniformMatrix4fv(r.rotationLoc, 1, false, &mat[0])
 	}
 
 	if r.ebo != 0 {

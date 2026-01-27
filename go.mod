@@ -10,3 +10,5 @@ require (
 	golang.org/x/image v0.35.0
 	gopkg.in/ini.v1 v1.67.1
 )
+
+require github.com/RaniSputnik/lovepac v0.0.0-20220213210906-b8a6a29d7959 // indirect

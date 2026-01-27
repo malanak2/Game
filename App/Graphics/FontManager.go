@@ -39,11 +39,15 @@ func InitFontManager() {
 
 func LoadFont(fontPath string) error {
 	og := fontPath
+	// modify the path so that it is Where we want it + this way we can omit the ttf since we dont support other formats anyway
 	fontPath = "Resources/Fonts/" + fontPath + ".ttf"
+	// Check if we cached the font yet
 	_, exists := FontMgr.Characters[og]
 	if exists {
 		return nil
 	}
+
+	// Initialize the array
 	FontMgr.Characters[og] = CharactersT{}
 	reader, err := os.Open(fontPath)
 	if err != nil {
@@ -63,7 +67,12 @@ func LoadFont(fontPath string) error {
 	defer face.Close()
 	gl.PixelStorei(gl.UNPACK_ALIGNMENT, 1)
 
-	for c := rune(0); c < 128; c++ {
+	// Atlas width, height
+	//w := 0
+	//h := 0
+
+	// Characters in the ascii table < 32 are control characters that arent renderable anyway, no need to load them
+	for c := rune(32); c < 128; c++ {
 		// Would probably be better to skip null term hmhmmm
 		if c == '\000' {
 			continue

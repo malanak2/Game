@@ -60,6 +60,7 @@ func (r *TextRendererT) RenderText(text string, x, y float32, scale float32, col
 	gl.BindVertexArray(r.Vao)
 
 	// Iterate through all characters
+	//var allVeritices []float64
 	for _, c := range text {
 		ch, ok := FontMgr.Characters[fontName][c]
 		if !ok {
@@ -83,11 +84,9 @@ func (r *TextRendererT) RenderText(text string, x, y float32, scale float32, col
 		}
 
 		gl.BindTexture(gl.TEXTURE_2D, ch.TextureID)
-		CheckForGLError()
 		gl.BindBuffer(gl.ARRAY_BUFFER, r.Vbo)
-		CheckForGLError()
 		gl.BufferSubData(gl.ARRAY_BUFFER, 0, len(vertices)*4, gl.Ptr(&vertices[0])) // be sure to use glBufferSubData and not glBufferData
-		CheckForGLError()
+		//allVeritices = append(allVeritices, vertices)
 
 		gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 		CheckForGLError()

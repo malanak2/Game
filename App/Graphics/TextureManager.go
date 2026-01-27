@@ -12,11 +12,15 @@ import (
 	"github.com/go-gl/gl/v3.3-core/gl"
 )
 
-type LoadedTexture struct {
+type Texture struct {
 	path string
+	img  *image.Image
+}
+
+type LoadedTexture struct {
+	Texture
 	id   uint32
 	uses int
-	img  *image.Image
 }
 
 type TextureManager_t struct {
@@ -41,7 +45,7 @@ func (l *LoadedTexture) LoadImg() error {
 	}
 	reader, err := os.Open(l.path)
 	if err != nil {
-		reader, err = os.Open("Resources/Fallback.png")
+		reader, err = os.Open("Resources/Textures/Fallback.png")
 		slog.Warn("Opening fallback texture", "original", l.path)
 		er = errors.New("fallback")
 		if err != nil {

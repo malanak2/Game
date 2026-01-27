@@ -39,7 +39,7 @@ func spawnTexturedTriangle() error {
 }
 
 func spawnTexturedCube() error {
-	vec := mgl32.NewVecN(3)
+	vec := mgl32.NewVecNFromData([]float32{1, 1, 1})
 	ti := Graphics.NewCube(vec.Vec3(), "trump.png")
 	ti.Render(true)
 	//a.tris = append(a.tris, ti)
