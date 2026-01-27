@@ -42,8 +42,7 @@ type Renderable struct {
 
 	cameraLoc int32
 
-	translationLoc int32
-	Translation    mgl32.Vec3
+	Translation mgl32.Vec3
 
 	rotationLoc int32
 	// Degrees
@@ -73,15 +72,11 @@ func (r *Renderable) Draw() error {
 		gl.UniformMatrix4fv(r.perspLoc, 1, false, &Camera.ProjectionMatrix[0])
 		gl.UniformMatrix4fv(r.cameraLoc, 1, false, &Camera.ViewMatrix[0])
 	}
-	if r.translationLoc != -1 {
-		matTranslate := mgl32.Translate3D(r.Translation.X(), r.Translation.Y(), r.Translation.Z())
-		gl.UniformMatrix4fv(r.translationLoc, 1, false, &matTranslate[0])
-	}
 	if r.rotationLoc != -1 {
-		mat := mgl32.Ident4()
-		mat = mat.Mul4(mgl32.Rotate3DX(r.Rotation.X()).Mat4())
-		mat = mat.Mul4(mgl32.Rotate3DY(r.Rotation.Y()).Mat4())
-		mat = mat.Mul4(mgl32.Rotate3DZ(r.Rotation.Z()).Mat4())
+		mat := mgl32.Translate3D(r.Translation.X(), r.Translation.Y(), r.Translation.Z())
+		mat = mat.Mul4(mgl32.Rotate3DX(mgl32.DegToRad(r.Rotation.X())).Mat4())
+		mat = mat.Mul4(mgl32.Rotate3DY(mgl32.DegToRad(r.Rotation.Y())).Mat4())
+		mat = mat.Mul4(mgl32.Rotate3DZ(mgl32.DegToRad(r.Rotation.Z())).Mat4())
 		gl.UniformMatrix4fv(r.rotationLoc, 1, false, &mat[0])
 	}
 

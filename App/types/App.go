@@ -40,8 +40,15 @@ func spawnTexturedTriangle() error {
 
 func spawnTexturedCube() error {
 	vec := mgl32.NewVecNFromData([]float32{1, 1, 1})
-	ti := Graphics.NewCube(vec.Vec3(), "trump.png")
+	ti := Graphics.NewCube(vec.Vec3(), mgl32.NewVecNFromData([]float32{45, 0, 0}).Vec3(), "trump.png")
 	ti.Render(true)
+	KeybindManager.AddOnHeld(glfw.KeyL, func() error {
+		ti.Rotation = ti.Rotation.Add(mgl32.NewVecNFromData([]float32{1, 0, 0}).Vec3())
+		return nil
+	})
+	ti2 := Graphics.NewCube(vec.Vec3(), mgl32.NewVecNFromData([]float32{0, 0, 0}).Vec3(), "trump.png")
+	ti2.Render(true)
+
 	//a.tris = append(a.tris, ti)
 	return nil
 }

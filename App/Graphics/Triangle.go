@@ -61,6 +61,12 @@ func NewTriangleTextured(path string) Triangle {
 	r.perspLoc = gl.GetUniformLocation(r.program, gl.Str("projection\000"))
 
 	r.cameraLoc = gl.GetUniformLocation(r.program, gl.Str("camera\x00"))
+
+	r.rotationLoc = gl.GetUniformLocation(r.program, gl.Str("rotation\x00"))
+
+	r.Rotation = mgl32.NewVecNFromData([]float32{0, 0, 0}).Vec3()
+
+	r.Translation = mgl32.NewVecNFromData([]float32{0, 0, 0}).Vec3()
 	MatPerspective := mgl32.Perspective(mgl32.DegToRad(config.Cfg.Main.Fov), float32(1920)/1080, 0.1, 100)
 	gl.UniformMatrix4fv(r.perspLoc, 1, false, &MatPerspective[0])
 	gl.GenVertexArrays(1, &r.vao)
