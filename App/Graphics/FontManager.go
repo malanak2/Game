@@ -11,8 +11,8 @@ import (
 
 	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
-	"github.com/golang/freetype"
-	"github.com/golang/freetype/truetype"
+	"github.com/goki/freetype"
+	"github.com/goki/freetype/truetype"
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
 )
@@ -64,7 +64,7 @@ func LoadFont(fontPath string) error {
 		return fmt.Errorf("failed to load font: %v", err)
 	}
 
-	face := truetype.NewFace(f, &truetype.Options{Size: 64})
+	face := truetype.NewFace(f, &truetype.Options{Size: 64, Hinting: font.HintingFull})
 	defer face.Close()
 	gl.PixelStorei(gl.UNPACK_ALIGNMENT, 1)
 
@@ -145,6 +145,7 @@ func LoadFont(fontPath string) error {
 			Face: face,
 			Dot:  dot,
 		}
+
 		drawer.DrawString(string(c))
 		rgbaV := drawer.Dst.(*image.Alpha)
 		gl.TextureSubImage2D(

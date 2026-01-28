@@ -6,9 +6,7 @@ require (
 	github.com/go-gl/gl v0.0.0-20231021071112-07e5d0ea2e71
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20250301202403-da16c1255728
 	github.com/go-gl/mathgl v1.2.0
-	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
+	github.com/goki/freetype v1.0.5
 	golang.org/x/image v0.35.0
 	gopkg.in/ini.v1 v1.67.1
 )
-
-require github.com/RaniSputnik/lovepac v0.0.0-20220213210906-b8a6a29d7959 // indirect
