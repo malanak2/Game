@@ -54,7 +54,7 @@ func (ctx *GraphicalmanagerT) Render(fps int, showFps bool) error {
 	}
 	if showFps {
 		// Draw FPS
-		err = TextRenderer.RenderText(strconv.Itoa(fps)+" fps", 100, 540, 1.0, Color{1, 1, 1, 1}, "Default")
+		err = TextRenderer.RenderText(strconv.Itoa(fps)+" fps", 100, 540, 0.5, Color{1, 1, 1, 1}, "Default")
 		CheckForGLError()
 		if err != nil {
 			return err
@@ -62,7 +62,7 @@ func (ctx *GraphicalmanagerT) Render(fps int, showFps bool) error {
 	}
 
 	if config.Cfg.Dev.Dev {
-		err = TextRenderer.RenderText("F1: Toggle wireframe, F2: Spawn textured triangle, F3: Spawn textured cube, F4: Toggle FPS, F5: Toggle VSync, Escape: Quit", 10, 1000, 0.5, Color{1, 1, 1, 1}, "Default")
+		err = TextRenderer.RenderText("F1: Toggle wireframe, F2: Spawn textured triangle, F3: Spawn textured cube, F4: Toggle FPS, F5: Toggle VSync, Escape: Quit", 10, 1000, 0.25, Color{1, 1, 1, 1}, "Default")
 	}
 
 	ctx.Window.SwapBuffers()

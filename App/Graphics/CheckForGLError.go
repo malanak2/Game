@@ -9,7 +9,8 @@ import (
 	"github.com/go-gl/gl/v3.3-core/gl"
 )
 
-func CheckForGLError() {
+func CheckForGLError() bool {
+	hasErrors := false
 	for code := gl.GetError(); code != gl.NO_ERROR; code = gl.GetError() {
 		var err string
 		switch code {
@@ -41,5 +42,7 @@ func CheckForGLError() {
 		} else {
 			slog.Error("OpenGL Error, failed to get caller", "err", err, "gl", code)
 		}
+		hasErrors = true
 	}
+	return hasErrors
 }

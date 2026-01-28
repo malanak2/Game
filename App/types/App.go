@@ -43,9 +43,14 @@ func spawnTexturedCube() error {
 	ti := Graphics.NewCube(Graphics.NewTransform(vec.Vec3(), mgl32.NewVecNFromData([]float32{45, 0, 0}).Vec3()), "trump.png")
 	ti.Render(true)
 	KeybindManager.AddOnHeld(glfw.KeyL, func() error {
-		ti.Transform.RotateX(1)
+		ti.Transform.RotateX(float32(100000 * AppState.DeltaTime))
+		ti.Transform.RotateY(float32(100000 * AppState.DeltaTime))
+		ti.Transform.RotateZ(float32(100000 * AppState.DeltaTime))
 		return nil
 	})
+	vec.Set(0, 2)
+	vec.Set(1, 2)
+	vec.Set(2, 2)
 	ti2 := Graphics.NewCube(Graphics.NewTransform(vec.Vec3(), mgl32.NewVecNFromData([]float32{0, 0, 0}).Vec3()), "trump.png")
 	ti2.Render(true)
 

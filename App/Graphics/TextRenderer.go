@@ -55,8 +55,8 @@ func (r *TextRendererT) RenderText(text string, x, y float32, scale float32, col
 	gl.Uniform1i(textLoc, 0)
 
 	gl.ActiveTexture(gl.TEXTURE0)
-	gl.ActiveTexture(gl.TEXTURE0)
 
+	gl.BindTexture(gl.TEXTURE_2D, FontMgr.textProgram[fontName])
 	gl.BindVertexArray(r.Vao)
 
 	// Iterate through all characters
@@ -73,17 +73,20 @@ func (r *TextRendererT) RenderText(text string, x, y float32, scale float32, col
 		w := float32(ch.Size[0]) * scale
 		h := float32(ch.Size[1]) * scale
 		// update VBO for each character
+		u0 := ch.BL.X()
+		v0 := ch.BL.Y() // This is 0 in your current setup
+		u1 := ch.TR.X()
+		v1 := ch.TR.Y()
 		vertices := []float32{
-			xpos, ypos + h, 0.0, 0.0,
-			xpos, ypos, 0.0, 1.0,
-			xpos + w, ypos, 1.0, 1.0,
+			xpos, ypos + h, u0, v0, // BL
+			xpos, ypos, u0, v1, // TL
+			xpos + w, ypos, u1, v1, // TR
 
-			xpos, ypos + h, 0.0, 0.0,
-			xpos + w, ypos, 1.0, 1.0,
-			xpos + w, ypos + h, 1.0, 0.0,
+			xpos, ypos + h, u0, v0, // BL
+			xpos + w, ypos, u1, v1, // TR
+			xpos + w, ypos + h, u1, v0, // BR
 		}
 
-		gl.BindTexture(gl.TEXTURE_2D, ch.TextureID)
 		gl.BindBuffer(gl.ARRAY_BUFFER, r.Vbo)
 		gl.BufferSubData(gl.ARRAY_BUFFER, 0, len(vertices)*4, gl.Ptr(&vertices[0])) // be sure to use glBufferSubData and not glBufferData
 		//allVeritices = append(allVeritices, vertices)

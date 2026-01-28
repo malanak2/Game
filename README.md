@@ -25,3 +25,4 @@ If windows says that the app cannot be launched on your device, try compiling wi
 
 ## Credits
 So many thanks to learnopengl.com, a LOT of the opengl code is taken from there, most of it changed up, but this project would not exist if it was not for this site
+https://github.com/Samson-Mano/opengl_textrendering
