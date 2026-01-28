@@ -15,6 +15,7 @@ import (
 type Texture struct {
 	path string
 	img  *image.Image
+	name string
 }
 
 type LoadedTexture struct {

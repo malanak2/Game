@@ -18,7 +18,7 @@ func InitTextRenderer() error {
 	vert := ShaderManager.LoadVertexShader("text")
 	frag := ShaderManager.LoadFragmentShader("text")
 	CheckForGLError()
-	program := MakeProgram(false, vert, frag)
+	program := ShaderManager.MakeProgram(false, vert, frag)
 	gl.UseProgram(program)
 
 	CheckForGLError()

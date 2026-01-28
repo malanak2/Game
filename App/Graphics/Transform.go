@@ -44,8 +44,7 @@ func (t *Transform) RotateZ(Angle float32) {
 }
 
 func (t *Transform) updateMatrix() {
-	mat := mgl32.Ident4()
-	mat = mat.Mul4(mgl32.Scale3D(t.Scale, t.Scale, t.Scale))
+	mat := mgl32.Scale3D(t.Scale, t.Scale, t.Scale)
 	mat = mat.Mul4(mgl32.Translate3D(t.Translation.X(), t.Translation.Y(), t.Translation.Z()))
 	mat = mat.Mul4(mgl32.Rotate3DX(mgl32.DegToRad(t.Rotation.X())).Mat4())
 	mat = mat.Mul4(mgl32.Rotate3DY(mgl32.DegToRad(t.Rotation.Y())).Mat4())

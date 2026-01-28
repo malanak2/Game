@@ -53,8 +53,17 @@ func spawnTexturedCube() error {
 	vec.Set(2, 2)
 	ti2 := Graphics.NewPyramid(Graphics.NewTransform(vec.Vec3(), mgl32.NewVecNFromData([]float32{0, 0, 0}).Vec3()), "trump.png")
 	ti2.Render(true)
-
+	KeybindManager.AddOnHeld(glfw.KeyK, func() error {
+		ti2.Transform.RotateX(float32(100000 * AppState.DeltaTime))
+		ti2.Transform.RotateY(float32(100000 * AppState.DeltaTime))
+		ti2.Transform.RotateZ(float32(100000 * AppState.DeltaTime))
+		return nil
+	})
 	//a.tris = append(a.tris, ti)
+	err := Graphics.LoadModel("backpack", "backpack.obj")
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -153,7 +162,6 @@ func InitApp(path *string) error {
 		return err
 	}
 	wfState = false
-
 	return nil
 }
 

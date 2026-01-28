@@ -9,7 +9,7 @@ func NewPyramid(transform Transform, texturePath string) *Renderable {
 
 	fragment := ShaderManager.LoadFragmentShader(`basicTexture`)
 
-	r.program = MakeProgram(true, vertex, fragment)
+	r.program = ShaderManager.MakeProgram(true, vertex, fragment)
 	gl.UseProgram(r.program)
 
 	r.colorLocation = gl.GetUniformLocation(r.program, gl.Str("inCol\000"))
@@ -27,10 +27,11 @@ func NewPyramid(transform Transform, texturePath string) *Renderable {
 	gl.BindVertexArray(r.vao)
 
 	var err error
-	r.texture, err = TextureManager.GetTexture(texturePath)
+	tex, err := TextureManager.GetTexture(texturePath)
 	if err != nil {
 		panic(err)
 	}
+	r.textures = append(r.textures, tex)
 
 	r.vertices = PYRAMIDVertices
 

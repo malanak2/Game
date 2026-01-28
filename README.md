@@ -9,8 +9,9 @@ If windows says that the app cannot be launched on your device, try compiling wi
 ```
 
 ### TODO:
-- Text Rendering
-- Kind of modular shape
+- Load jpgs
+- Fix models
+  - Note to self: Seems that the queries for locations are just material. and not adding the things its supposed to
 
 ## Concepts
 

@@ -11,7 +11,7 @@ func NewCube(transform Transform, texturePath string) *Renderable {
 
 	fragment := ShaderManager.LoadFragmentShader(`basicTexture`)
 
-	r.program = MakeProgram(true, vertex, fragment)
+	r.program = ShaderManager.MakeProgram(true, vertex, fragment)
 	gl.UseProgram(r.program)
 
 	r.colorLocation = gl.GetUniformLocation(r.program, gl.Str("inCol\000"))
@@ -29,7 +29,7 @@ func NewCube(transform Transform, texturePath string) *Renderable {
 	gl.BindVertexArray(r.vao)
 
 	var err error
-	r.texture, err = TextureManager.GetTexture(texturePath)
+	r.textures[0], err = TextureManager.GetTexture(texturePath)
 	if err != nil {
 		panic(err)
 	}
