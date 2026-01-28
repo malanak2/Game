@@ -47,6 +47,7 @@ func (ctx *GraphicalmanagerT) Render(fps int, showFps bool) error {
 	var err error
 	for i := range ctx.objects {
 		err = (*ctx.objects[i]).Draw()
+		CheckForGLError()
 		if err != nil {
 			return err
 		}
@@ -54,6 +55,7 @@ func (ctx *GraphicalmanagerT) Render(fps int, showFps bool) error {
 	if showFps {
 		// Draw FPS
 		err = TextRenderer.RenderText(strconv.Itoa(fps)+" fps", 100, 540, 1.0, Color{1, 1, 1, 1}, "Default")
+		CheckForGLError()
 		if err != nil {
 			return err
 		}

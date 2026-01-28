@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/malanak2/Game/App/Graphics"
-	config2 "github.com/malanak2/Game/App/config"
+	config "github.com/malanak2/Game/App/config"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
@@ -40,13 +40,13 @@ func spawnTexturedTriangle() error {
 
 func spawnTexturedCube() error {
 	vec := mgl32.NewVecNFromData([]float32{1, 1, 1})
-	ti := Graphics.NewCube(vec.Vec3(), mgl32.NewVecNFromData([]float32{45, 0, 0}).Vec3(), "trump.png")
+	ti := Graphics.NewCube(Graphics.NewTransform(vec.Vec3(), mgl32.NewVecNFromData([]float32{45, 0, 0}).Vec3()), "trump.png")
 	ti.Render(true)
 	KeybindManager.AddOnHeld(glfw.KeyL, func() error {
-		ti.Rotation = ti.Rotation.Add(mgl32.NewVecNFromData([]float32{1, 0, 0}).Vec3())
+		ti.Transform.RotateX(1)
 		return nil
 	})
-	ti2 := Graphics.NewCube(vec.Vec3(), mgl32.NewVecNFromData([]float32{0, 0, 0}).Vec3(), "trump.png")
+	ti2 := Graphics.NewCube(Graphics.NewTransform(vec.Vec3(), mgl32.NewVecNFromData([]float32{0, 0, 0}).Vec3()), "trump.png")
 	ti2.Render(true)
 
 	//a.tris = append(a.tris, ti)
@@ -59,21 +59,23 @@ func toggleFps() error {
 }
 
 func toggleVsync() error {
-	if config2.Cfg.Main.Vsync {
+	if config.Cfg.Main.Vsync {
 		glfw.SwapInterval(0)
-		config2.Cfg.Main.Vsync = false
+		config.Cfg.Main.Vsync = false
 	} else {
 		glfw.SwapInterval(1)
-		config2.Cfg.Main.Vsync = true
+		config.Cfg.Main.Vsync = true
 	}
 	return nil
 }
 
 func InitApp(path *string) error {
-	err := config2.InitConfig(*path)
+	err := config.InitConfig(*path)
 	if err != nil {
 		return err
 	}
+
+	slog.Info("Initializing engine", "engineVersion", config.Version)
 
 	// Initialize managers
 	slog.Info("Initializing Graphics Manager")
@@ -101,7 +103,7 @@ func InitApp(path *string) error {
 	InitKeybindManager()
 
 	// Dev Keybinds
-	if config2.Cfg.Dev.Dev {
+	if config.Cfg.Dev.Dev {
 		slog.Info("Initializing Development Mode")
 		KeybindManager.AddOnHeld(glfw.KeyW, func() error {
 			Graphics.Camera.MoveCamera(Graphics.CameraForward, float32(AppState.DeltaTime))

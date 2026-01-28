@@ -2,10 +2,9 @@ package Graphics
 
 import (
 	"github.com/go-gl/gl/v3.3-core/gl"
-	"github.com/go-gl/mathgl/mgl32"
 )
 
-func NewCube(coords mgl32.Vec3, rotation mgl32.Vec3, texturePath string) *Renderable {
+func NewCube(transform Transform, texturePath string) *Renderable {
 	r := Renderable{}
 	texturePath = "Resources/Textures/" + texturePath
 	vertex := ShaderManager.LoadVertexShader(`basicTexture`)
@@ -16,8 +15,6 @@ func NewCube(coords mgl32.Vec3, rotation mgl32.Vec3, texturePath string) *Render
 	gl.UseProgram(r.program)
 
 	r.colorLocation = gl.GetUniformLocation(r.program, gl.Str("inCol\000"))
-
-	r.matrixLoc = gl.GetUniformLocation(r.program, gl.Str("transform\x00"))
 
 	r.perspLoc = gl.GetUniformLocation(r.program, gl.Str("projection\000"))
 
@@ -37,15 +34,9 @@ func NewCube(coords mgl32.Vec3, rotation mgl32.Vec3, texturePath string) *Render
 		panic(err)
 	}
 
-	r.matrix = mgl32.Ident4()
-
-	r.scale = 0.5
-
 	r.vertices = CUBEVertices
 
-	r.Translation = coords
-
-	r.Rotation = rotation // mgl32.NewVecNFromData([]float32{45, 0, 0}).Vec3()
+	r.Transform = transform
 
 	// Binds vbo, ebo
 	r.vbo = ShaderManager.LoadVertices(CUBEVertices)

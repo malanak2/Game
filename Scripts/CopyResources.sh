@@ -1,2 +1,1 @@
-rm -rf build/Resources
-cp -r Resources build/Resources
+rsync --checksum -r Resources build/
