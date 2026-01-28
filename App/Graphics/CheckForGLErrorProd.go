@@ -2,6 +2,6 @@
 
 package Graphics
 
-func CheckForGLError() {
-
+func CheckForGLError() bool {
+	return false
 }
