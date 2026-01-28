@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"image"
-	"image/color"
 	"io"
 	"log"
 	"log/slog"
@@ -142,7 +141,7 @@ func LoadFont(fontPath string) error {
 
 		drawer := font.Drawer{
 			Dst:  rgba,
-			Src:  image.NewUniform(color.Alpha{A: 255}),
+			Src:  image.Opaque,
 			Face: face,
 			Dot:  dot,
 		}

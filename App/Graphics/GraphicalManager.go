@@ -62,7 +62,7 @@ func (ctx *GraphicalmanagerT) Render(fps int, showFps bool) error {
 	}
 
 	if config.Cfg.Dev.Dev {
-		err = TextRenderer.RenderText("F1: Toggle wireframe, F2: Spawn textured triangle, F3: Spawn textured cube, F4: Toggle FPS, F5: Toggle VSync, Escape: Quit", 10, 1000, 0.25, Color{1, 1, 1, 1}, "Default")
+		err = TextRenderer.RenderText("F1: Toggle wireframe, F2: Spawn textured triangle, F3: Spawn textured cube, F4: Toggle FPS, F5: Toggle VSync, Escape: Quit", 10, 1000, 0.33, Color{1, 1, 1, 1}, "Default")
 	}
 
 	ctx.Window.SwapBuffers()
