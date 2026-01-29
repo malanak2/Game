@@ -1,6 +1,8 @@
 package Graphics
 
-import "github.com/go-gl/mathgl/mgl32"
+import (
+	"github.com/go-gl/mathgl/mgl32"
+)
 
 type Transform struct {
 	Translation, Rotation mgl32.Vec3

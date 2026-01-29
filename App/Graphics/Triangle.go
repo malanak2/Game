@@ -71,11 +71,11 @@ func NewTriangleTextured(path string) Triangle {
 	gl.BindVertexArray(r.vao)
 
 	var err error
-	r.textures[0], err = TextureManager.GetTexture(path)
+	tex, err := TextureManager.GetTexture(path)
 	if err != nil {
 		panic(err)
 	}
-
+	r.textures = append(r.textures, tex)
 	r.vertices = SQUAREVertices
 
 	r.indices = SQUAREIndices

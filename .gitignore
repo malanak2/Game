@@ -1,5 +1,5 @@
 Resources/Packed
-
+main.go
 *.ini
 build
 .idea

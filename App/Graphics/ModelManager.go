@@ -160,7 +160,9 @@ func processMesh(mesh *assimp.Mesh, scene *assimp.Scene, dir string) Renderable 
 	rend := Renderable{vertexes: vertices, indices: indeces, textures: textures}
 	vertexshader := ShaderManager.LoadVertexShader("model")
 	fragmentshader := ShaderManager.LoadFragmentShader("model")
+	vao, vbo, ebo := ShaderManager.LoadVertexes(vertices, indeces)
 	program := ShaderManager.MakeProgram(true, vertexshader, fragmentshader)
+	gl.UseProgram(program)
 	rend.program = program
 	rend.colorLocation = gl.GetUniformLocation(rend.program, gl.Str("inCol\000"))
 
@@ -169,10 +171,10 @@ func processMesh(mesh *assimp.Mesh, scene *assimp.Scene, dir string) Renderable 
 	rend.cameraLoc = gl.GetUniformLocation(rend.program, gl.Str("camera\x00"))
 
 	rend.rotationLoc = gl.GetUniformLocation(rend.program, gl.Str("rotation\x00"))
+	rend.Transform.Scale = 1
 	rend.Transform.SetPos(mgl32.NewVecNFromData([]float32{0, 0, 0}).Vec3())
 	rend.Transform.Rotation = mgl32.NewVecNFromData([]float32{0, 0, 0}).Vec3()
 	rend.Transform.updateMatrix()
-	vao, vbo, ebo := ShaderManager.LoadVertexes(vertices, indeces)
 	rend.vao = vao
 	rend.vbo = vbo
 	rend.ebo = ebo
@@ -215,6 +217,7 @@ func loadMaterialTextures(mat *assimp.Material, kind assimp.TextureType, kindNam
 			slog.Error("Failed to load material texture", "path", str)
 			return nil
 		}
+		tex.name = kindName
 		textures = append(textures, tex)
 	}
 	return textures

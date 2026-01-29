@@ -12,5 +12,5 @@ uniform mat4 camera;
 void main()
 {
     TexCoords = aTexCoords;
-    gl_Position = camera * projection * rotation * vec4(aPos, 1.0);
+    gl_Position = projection * camera * rotation * vec4(aPos, 1.0);
 }

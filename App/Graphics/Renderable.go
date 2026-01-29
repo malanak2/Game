@@ -65,12 +65,13 @@ func NewRenderable(options RenderableOptions) Renderable {
 func (r *Renderable) Draw() error {
 	diffuseNr := 1
 	specularNr := 1
+	normalNr := 1
+	heightNr := 1
 
 	gl.UseProgram(r.program)
 	if r.textures != nil {
 		for i, tex := range r.textures {
 			gl.ActiveTexture(uint32(gl.TEXTURE0 + i))
-			gl.BindTexture(gl.TEXTURE_2D, tex.id)
 			var number string
 			name := tex.name
 
@@ -80,11 +81,16 @@ func (r *Renderable) Draw() error {
 			} else if name == "texture_specular" {
 				number = strconv.Itoa(specularNr)
 				specularNr++
+			} else if name == "texture_normal" {
+				number = strconv.Itoa(normalNr)
+				normalNr++
+			} else if name == "texture_height" {
+				number = strconv.Itoa(heightNr)
+				heightNr++
 			}
-			gl.Uniform1i(gl.GetUniformLocation(r.program, gl.Str("material."+name+number+"\x00")), int32(i))
+			gl.Uniform1i(gl.GetUniformLocation(r.program, gl.Str( /*"material."+*/ name+number+"\x00")), int32(i))
 			gl.BindTexture(gl.TEXTURE_2D, tex.id)
 		}
-		gl.ActiveTexture(gl.TEXTURE0)
 		CheckForGLError()
 	}
 	gl.BindVertexArray(r.vao)
@@ -118,6 +124,8 @@ func (r *Renderable) Draw() error {
 	}
 
 	gl.BindVertexArray(0)
+	gl.ActiveTexture(gl.TEXTURE0)
+	CheckForGLError()
 	return nil
 }
 
