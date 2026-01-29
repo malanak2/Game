@@ -17,7 +17,7 @@ func LoadModel(dir, file string) error {
 		return err
 	}
 	exPath := filepath.Dir(ex)
-	scene := assimp.ImportFile(exPath+"/Resources/Models/"+dir+"/"+file, uint(assimp.Process_Triangulate|assimp.Process_FlipUVs))
+	scene := assimp.ImportFile(exPath+"/Resources/Models/"+dir+"/"+file, uint(assimp.Process_Triangulate /*|assimp.Process_FlipUVs*/))
 	if scene == nil || scene.Flags()&assimp.SceneFlags_Incomplete != 0 || scene.RootNode() == nil {
 		return errors.New("Assimp error: " + assimp.GetErrorString())
 	}
@@ -29,14 +29,14 @@ func processNode(node *assimp.Node, scene *assimp.Scene, dir string) {
 	//// process each mesh located at the current node
 	//for(unsigned int i = 0; i < node->mNumMeshes; i++)
 	for i := range node.NumMeshes() {
-		//// the node object only contains indices to index the actual objects in the scene.
+		//// the node object only contains indices to index the actual Objects in the scene.
 		//// the scene contains all the data, node is just to keep stuff organized (like relations between nodes).
 		//aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 		//meshes.push_back(processMesh(mesh, scene));
 		mesh := scene.Meshes()[node.Meshes()[i]]
 		meshProcessed := processMesh(mesh, scene, dir)
 		meshProcessed.Render(true)
-		ObjectManager.PushObject(meshProcessed)
+		ObjectManager.PushObject(&meshProcessed)
 	}
 	//// after we've processed all of the meshes (if any) we then recursively process each of the children nodes
 	//for(unsigned int i = 0; i < node->mNumChildren; i++)

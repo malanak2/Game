@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"image"
 	"image/draw"
+	_ "image/jpeg"
 	_ "image/png"
 	"log/slog"
 	"os"
@@ -46,8 +47,8 @@ func (l *LoadedTexture) LoadImg() error {
 	}
 	reader, err := os.Open(l.path)
 	if err != nil {
+		slog.Warn("Opening fallback texture", "original", l.path, "error", err.Error())
 		reader, err = os.Open("Resources/Textures/Fallback.png")
-		slog.Warn("Opening fallback texture", "original", l.path)
 		er = errors.New("fallback")
 		if err != nil {
 			return err
@@ -107,6 +108,7 @@ func (t *TextureManager_t) loadTexture(path string) (*LoadedTexture, error) {
 }
 
 func (t *TextureManager_t) GetTexture(path string) (*LoadedTexture, error) {
+	path = "Resources/Textures/" + path
 	for _, texture := range t.loadedTextures {
 		if texture.path == path {
 			_ = texture.LoadImg()

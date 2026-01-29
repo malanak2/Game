@@ -3,7 +3,6 @@ package types
 import (
 	"log/slog"
 
-	"github.com/go-gl/mathgl/mgl32"
 	"github.com/malanak2/Game/App/Graphics"
 	config "github.com/malanak2/Game/App/config"
 
@@ -39,28 +38,37 @@ func spawnTexturedTriangle() error {
 }
 
 func spawnTexturedCube() error {
-	vec := mgl32.NewVecNFromData([]float32{1, 1, 1})
-	ti := Graphics.NewPyramid(Graphics.NewTransform(vec.Vec3(), mgl32.NewVecNFromData([]float32{45, 0, 0}).Vec3()), "Obamna.png")
-	ti.Render(true)
-	KeybindManager.AddOnHeld(glfw.KeyL, func() error {
-		ti.Transform.RotateX(float32(100000 * AppState.DeltaTime))
-		ti.Transform.RotateY(float32(100000 * AppState.DeltaTime))
-		ti.Transform.RotateZ(float32(100000 * AppState.DeltaTime))
-		return nil
-	})
-	vec.Set(0, 2)
-	vec.Set(1, 2)
-	vec.Set(2, 2)
-	ti2 := Graphics.NewPyramid(Graphics.NewTransform(vec.Vec3(), mgl32.NewVecNFromData([]float32{0, 0, 0}).Vec3()), "trump.png")
-	ti2.Render(true)
-	KeybindManager.AddOnHeld(glfw.KeyK, func() error {
-		ti2.Transform.RotateX(float32(100000 * AppState.DeltaTime))
-		ti2.Transform.RotateY(float32(100000 * AppState.DeltaTime))
-		ti2.Transform.RotateZ(float32(100000 * AppState.DeltaTime))
-		return nil
-	})
+	//vec := mgl32.NewVecNFromData([]float32{1, 1, 1})
+	//ti := Graphics.NewPyramid(Graphics.NewTransform(vec.Vec3(), mgl32.NewVecNFromData([]float32{45, 0, 0}).Vec3()), "Obamna.png")
+	//ti.Render(true)
+	//KeybindManager.AddOnHeld(glfw.KeyL, func() error {
+	//	ti.Transform.RotateX(float32(100000 * AppState.DeltaTime))
+	//	ti.Transform.RotateY(float32(100000 * AppState.DeltaTime))
+	//	ti.Transform.RotateZ(float32(100000 * AppState.DeltaTime))
+	//	return nil
+	//})
+	//vec.Set(0, 2)
+	//vec.Set(1, 2)
+	//vec.Set(2, 2)
+	//ti2 := Graphics.NewPyramid(Graphics.NewTransform(vec.Vec3(), mgl32.NewVecNFromData([]float32{0, 0, 0}).Vec3()), "trump.png")
+	//ti2.Render(true)
+	//KeybindManager.AddOnHeld(glfw.KeyK, func() error {
+	//	ti2.Transform.RotateX(float32(100000 * AppState.DeltaTime))
+	//	ti2.Transform.RotateY(float32(100000 * AppState.DeltaTime))
+	//	ti2.Transform.RotateZ(float32(100000 * AppState.DeltaTime))
+	//	return nil
+	//})
 	//a.tris = append(a.tris, ti)
 	err := Graphics.LoadModel("backpack", "backpack.obj")
+	for ind, _ := range Graphics.ObjectManager.Objects {
+		i := ind
+		KeybindManager.AddOnHeld(glfw.KeyL, func() error {
+			Graphics.ObjectManager.Objects[i].RotateX(1 * 100000 * float32(AppState.DeltaTime))
+			Graphics.ObjectManager.Objects[i].RotateY(1 * 100000 * float32(AppState.DeltaTime))
+			Graphics.ObjectManager.Objects[i].RotateZ(1 * 100000 * float32(AppState.DeltaTime))
+			return nil
+		})
+	}
 	if err != nil {
 		return err
 	}

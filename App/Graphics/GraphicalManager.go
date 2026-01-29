@@ -43,7 +43,7 @@ func (ctx *GraphicalmanagerT) Render(fps int, showFps bool) error {
 	gl.Clear(gl.DEPTH_BUFFER_BIT)
 	ctx.DrawBackground()
 
-	// Draw objects
+	// Draw Objects
 	var err error
 	for i := range ctx.objects {
 		err = (*ctx.objects[i]).Draw()

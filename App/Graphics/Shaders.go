@@ -63,7 +63,6 @@ func (t *t_ShaderManager) LoadVertexes(vertices []Vertex, indices []uint32) (uin
 	//// The effect is that we can simply pass a pointer to the struct and it translates perfectly to a glm::vec3/2 array which
 	//// again translates to 3/2 floats which translates to a byte array.
 	//glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
-	slog.Info("Sizeof vertex", "size", unsafe.Sizeof(Vertex{}))
 	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*int(unsafe.Sizeof(Vertex{})), gl.Ptr(vertices), gl.STATIC_DRAW)
 	//
 	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
@@ -159,7 +158,6 @@ func (t *t_ShaderManager) LoadVertexShader(shaderSource string) uint32 {
 	shaderSource = "Resources/Shaders/" + shaderSource + ".vertex"
 	v, hash := t.checkCache(shaderSource)
 	if v != 0 {
-		slog.Info("Hit cache")
 		return v
 	}
 	// Load File
@@ -194,7 +192,6 @@ func (t *t_ShaderManager) LoadVertexShader(shaderSource string) uint32 {
 func (t *t_ShaderManager) MakeProgram(reusableShaders bool, shaders ...uint32) uint32 {
 	v, hash := t.checkPCache(shaders...)
 	if v != 0 {
-		slog.Info("Hit shader cache")
 		return v
 	}
 	program := gl.CreateProgram()

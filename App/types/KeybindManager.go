@@ -2,8 +2,9 @@ package types
 
 import (
 	"errors"
-	"github.com/malanak2/Game/App/types/Util"
 	"log/slog"
+
+	"github.com/malanak2/Game/App/types/Util"
 
 	"github.com/go-gl/glfw/v3.3/glfw"
 )
@@ -96,7 +97,7 @@ func (k *KeyBind) AddOnPressed(pressed Func) int {
 }
 
 func (k *KeyBind) AddOnHeld(held Func) int {
-	k.onHeld = append(k.onPressed, held)
+	k.onHeld = append(k.onHeld, held)
 	return len(k.onHeld) - 1
 }
 

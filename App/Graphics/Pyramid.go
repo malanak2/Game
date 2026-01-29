@@ -4,7 +4,7 @@ import "github.com/go-gl/gl/v3.3-core/gl"
 
 func NewPyramid(transform Transform, texturePath string) *Renderable {
 	r := Renderable{}
-	texturePath = "Resources/Textures/" + texturePath
+	texturePath = texturePath
 	vertex := ShaderManager.LoadVertexShader(`basicTexture`)
 
 	fragment := ShaderManager.LoadFragmentShader(`basicTexture`)

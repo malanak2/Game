@@ -1,15 +1,15 @@
 package Graphics
 
 type ObjectManagerT struct {
-	objects []Renderable
+	Objects []*Renderable
 }
 
 var ObjectManager ObjectManagerT
 
 func InitObjectManager() {
-	ObjectManager = ObjectManagerT{objects: make([]Renderable, 0)}
+	ObjectManager = ObjectManagerT{Objects: make([]*Renderable, 0)}
 }
 
-func (o *ObjectManagerT) PushObject(object Renderable) {
-	o.objects = append(o.objects, object)
+func (o *ObjectManagerT) PushObject(object *Renderable) {
+	o.Objects = append(o.Objects, object)
 }
