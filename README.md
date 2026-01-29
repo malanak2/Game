@@ -9,9 +9,8 @@ If windows says that the app cannot be launched on your device, try compiling wi
 ```
 
 ### TODO:
-- Load jpgs
-- Fix models
-  - Note to self: Seems that the queries for locations are just material. and not adding the things its supposed to
+- Make some kind of protocol for communication between graphical engine and the glue program and implement it properly
+- This would most probably pass config from some kind of global config
 
 ## Concepts
 
